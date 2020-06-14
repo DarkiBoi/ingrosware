@@ -88,6 +88,10 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
         }
     }
 
+    public void setBind(int bind) {
+        this.bind = bind;
+    }
+
     @Override
     public void onState() {
     }

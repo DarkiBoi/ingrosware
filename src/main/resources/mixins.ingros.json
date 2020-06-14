@@ -18,7 +18,6 @@
     "MixinCPacketTabComplete",
     "MixinGuiBossOverlay",
     "MixinGuiNewChat",
-    "MixinGuiScreen",
     "MixinLayerArmorBase",
     "MixinNetHandlerPlayClient",
     "MixinPlayerControllerMP",

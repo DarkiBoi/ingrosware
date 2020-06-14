@@ -148,5 +148,15 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
         return toggleableModules;
     }
 
+    public IModule getModule(String name) {
+        return getRegistry().get(name);
+    }
 
+    public ToggleableModule getToggleByName(String name) {
+        for(ToggleableModule toggleableModule : getToggles()) {
+            if(toggleableModule.getLabel().equalsIgnoreCase(name)) return toggleableModule;
+        }
+
+        return null;
+    }
 }

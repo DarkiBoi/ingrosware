@@ -9,7 +9,7 @@ import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
 
-@Toggleable(label = "Sprint", category = ModuleCategory.MOVEMENT,color = 0xff72B190,bind = Keyboard.KEY_NONE, hidden = true)
+@Toggleable(label = "Sprint", category = ModuleCategory.MOVEMENT,color = 0xff72B190,bind = Keyboard.KEY_NONE)
 public class SprintModule extends ToggleableModule {
 
     @Subscribe

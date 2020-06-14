@@ -31,7 +31,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
 
     @Override
     public void start() {
-        loadInternalModules();
+        loadInternalComponents();
         loadExternalComponents();
 
         getValues().forEach(Component::init);
@@ -47,7 +47,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         put(component.getLabel(), component);
     }
 
-    private void loadInternalModules() {
+    private void loadInternalComponents() {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             final String modulePackage = "us.devs.ingrosware.hud.impl";

@@ -28,7 +28,7 @@ public class CommandManager extends AbstractMapManager<String, Command> {
 
     @Override
     public void start() {
-        loadInternalModules();
+        loadInternalCommands();
         loadExternalCommands();
 
         IngrosWare.INSTANCE.getModuleManager().getValues().forEach(module -> {
@@ -45,7 +45,7 @@ public class CommandManager extends AbstractMapManager<String, Command> {
         put(command.getLabel(), command);
     }
 
-    private void loadInternalModules() {
+    private void loadInternalCommands() {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             final String modulePackage = "us.devs.ingrosware.command.impl";

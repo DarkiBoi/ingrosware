@@ -6,6 +6,7 @@ import tcb.bces.bus.DRCExpander;
 import us.devs.ingrosware.command.manager.CommandManager;
 import us.devs.ingrosware.event.EventDispatcher;
 import us.devs.ingrosware.font.FontManager;
+import us.devs.ingrosware.friend.FriendManager;
 import us.devs.ingrosware.hud.manager.ComponentManager;
 import us.devs.ingrosware.module.manager.ModuleManager;
 import us.devs.ingrosware.setting.SettingManager;
@@ -31,6 +32,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
     private CommandManager commandManager;
     private ComponentManager componentManager;
     private FontManager fontManager;
+    private FriendManager friendManager;
     private final SettingManager settingManager = new SettingManager();
 
     @Override
@@ -44,6 +46,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.componentManager = new ComponentManager(new File(baseDir, "components"));
         this.moduleManager = new ModuleManager(new File(baseDir, "modules"));
         this.commandManager = new CommandManager(new File(baseDir, "commands"));
+        this.friendManager = new FriendManager(baseDir);
         this.fontManager.start();
         this.componentManager.start();
         this.moduleManager.start();
@@ -88,5 +91,13 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
 
     public ComponentManager getComponentManager() {
         return componentManager;
+    }
+
+    public FriendManager getFriendManager() {
+        return friendManager;
+    }
+
+    public File getBaseDir() {
+        return baseDir;
     }
 }

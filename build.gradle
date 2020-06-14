@@ -101,7 +101,7 @@ jar {
     manifest {
         attributes(
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                "FMLCorePlugin": 'best.reich.ingros.mixin.launch.IngrosLoader',
+                "FMLCorePlugin": 'us.devs.ingrosware.mixin.IngrosLoader',
                 "TweakOrder": 0,
                 "MixinConfigs": 'mixins.ingros.json'
         )
