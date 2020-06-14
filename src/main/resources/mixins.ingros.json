@@ -11,6 +11,21 @@
     "MixinEntity",
     "MixinEntityPlayer",
     "MixinEntityPlayerSP",
-    "MixinNetworkManager"
+    "MixinNetworkManager",
+    "MixinBlock",
+    "MixinCPacketCustomPayload",
+    "MixinCPacketPlayer",
+    "MixinCPacketTabComplete",
+    "MixinGuiBossOverlay",
+    "MixinGuiNewChat",
+    "MixinGuiScreen",
+    "MixinLayerArmorBase",
+    "MixinNetHandlerPlayClient",
+    "MixinPlayerControllerMP",
+    "MixinRender",
+    "MixinRenderManager",
+    "MixinSPacketPosLook",
+    "MixinTextComponentString",
+    "MixinWorldClient"
   ]
 }

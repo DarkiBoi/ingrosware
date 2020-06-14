@@ -1,8 +1,13 @@
 package us.devs.ingrosware.mixin.impl;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import us.devs.ingrosware.IngrosWare;
+import us.devs.ingrosware.event.impl.other.SafeWalkEvent;
 
 /**
  * made for Ingros
@@ -24,6 +29,10 @@ public class MixinEntity {
     public float rotationPitch;
     @Shadow
     public boolean onGround;
+    @Shadow
+    public boolean inPortal;
+    @Shadow
+    public void move(MoverType type, double x, double y, double z) {}
 
     public float getRotationYaw() {
         return rotationYaw;
@@ -49,5 +58,10 @@ public class MixinEntity {
         return onGround;
     }
 
-
+    @Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isSneaking()Z"))
+    public boolean isSneaking(Entity entity) {
+        SafeWalkEvent event = new SafeWalkEvent();
+        IngrosWare.INSTANCE.getBus().post(event);
+        return event.isCancelled() || entity.isSneaking();
+    }
 }

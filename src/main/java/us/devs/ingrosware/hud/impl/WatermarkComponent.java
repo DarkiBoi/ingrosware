@@ -20,7 +20,8 @@ public class WatermarkComponent extends Component {
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
         super.onDraw(scaledResolution);
-
+        if (mc.world == null || mc.player == null)
+            return;
         mc.fontRenderer.drawStringWithShadow("Test", getX(), getY(), -1);
     }
 }

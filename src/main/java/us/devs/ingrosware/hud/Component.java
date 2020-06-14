@@ -106,6 +106,7 @@ public class Component implements Labelable, Hideable, Configable {
                 case "hidden":
                     setHidden(data.getValue().getAsBoolean());
                     return;
+                default:break;
             }
         });
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
