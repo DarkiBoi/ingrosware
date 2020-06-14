@@ -18,7 +18,7 @@ import us.devs.ingrosware.traits.Labelable;
 public class Component implements Labelable, Hideable, Configable {
     private float x, y, width, height, lastX, lastY;
     public String label;
-    private boolean hidden, dragging;
+    private boolean hidden, dragging, labelHidden;
 
     public Minecraft mc = Minecraft.getMinecraft();
     private ScaledResolution sr = new ScaledResolution(mc);
@@ -51,7 +51,7 @@ public class Component implements Labelable, Hideable, Configable {
     }
 
     public void init() {
-
+        IngrosWare.INSTANCE.getSettingManager().scan(this);
     }
 
     public void onDraw(ScaledResolution scaledResolution) {
@@ -111,6 +111,26 @@ public class Component implements Labelable, Hideable, Configable {
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
             directory.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> property.setValue(entry.getValue().getAsString())));
         }
+    }
+
+    public void setLabelHidden(boolean labelHidden) {
+        this.labelHidden = labelHidden;
+    }
+
+    public boolean isLabelHidden() {
+        return labelHidden;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     public float getLastX() {

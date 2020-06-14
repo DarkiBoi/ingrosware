@@ -24,4 +24,8 @@ public class BooleanSetting extends AbstractSetting<Boolean> {
             setValue(false);
         }
     }
+
+    public void toggle() {
+        setValue(!getValue());
+    }
 }

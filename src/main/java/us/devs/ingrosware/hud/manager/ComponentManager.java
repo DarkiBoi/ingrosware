@@ -43,7 +43,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         save();
     }
 
-    private void register(Component component) {
+    public void register(Component component) {
         put(component.getLabel(), component);
     }
 
@@ -85,7 +85,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         }
     }
 
-    public void load() {
+    private void load() {
         getValues().forEach(component -> {
             Path pluginConfiguration = new File(dir, component.getLabel().toLowerCase() + ".json").toPath();
             if (Files.exists(pluginConfiguration)) {
@@ -100,7 +100,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         });
     }
 
-    public void save() {
+    private void save() {
         File[] configurations = dir.listFiles();
         if (configurations != null) {
             for (File configuration : configurations)

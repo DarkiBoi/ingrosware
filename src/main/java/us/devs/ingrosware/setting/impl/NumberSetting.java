@@ -44,6 +44,7 @@ public class NumberSetting<T extends Number> extends AbstractSetting<T> {
             setValue((T) NumberUtils.createLong(value));
         }
     }
+
     public T getMinimum() {
         return minimum;
     }
