@@ -2,7 +2,9 @@ package us.devs.ingrosware.command;
 
 import net.minecraft.client.Minecraft;
 import us.devs.ingrosware.command.annotation.CommandManifest;
+import us.devs.ingrosware.traits.Chatable;
 import us.devs.ingrosware.traits.Labelable;
+import us.devs.ingrosware.util.other.chat.ChatBuilder;
 
 /**
  * made for Ingros
@@ -10,7 +12,7 @@ import us.devs.ingrosware.traits.Labelable;
  * @author Brennan
  * @since 6/13/2020
  **/
-public abstract class Command implements Labelable {
+public abstract class Command implements Labelable, Chatable {
     private String label, description;
     private String[] handles;
 

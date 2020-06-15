@@ -62,6 +62,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.fontManager.close();
         this.componentManager.close();
         this.moduleManager.close();
+        this.friendManager.close();
     }
 
     @Override

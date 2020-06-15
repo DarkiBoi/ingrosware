@@ -3,6 +3,7 @@ package us.devs.ingrosware.gui.hud;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import us.devs.ingrosware.IngrosWare;
+import us.devs.ingrosware.gui.hud.settings.HudSettings;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
@@ -69,11 +70,11 @@ public class GuiHudEditor extends GuiScreen {
                     }
                     break;
                 case 1:
-//                    if(hovered) {
-//                        mc.displayGuiScreen(new HudSettings(hudComponent));
-//                    } else {
-//                        mc.displayGuiScreen(new CustomHudComponent());
-//                    }
+                    if(hovered) {
+                        mc.displayGuiScreen(new HudSettings(hudComponent));
+                    } else {
+                        mc.displayGuiScreen(new CustomHudComponent());
+                    }
                     break;
                 case 3:
                     if (hovered)

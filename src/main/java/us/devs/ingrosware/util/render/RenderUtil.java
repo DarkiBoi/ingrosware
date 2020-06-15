@@ -36,6 +36,7 @@ public class RenderUtil {
         hue /= speed;
         return Color.getHSBColor(hue, s, 1f).getRGB();
     }
+
     public static void prepareScissorBox(ScaledResolution sr, float x, float y, float width, float height) {
         float x2 = x + width;
         float y2 = y + height;
@@ -371,4 +372,22 @@ public class RenderUtil {
         GL11.glPopMatrix();
         GL11.glColor4f(1f, 1f, 1f, 1f);
     }
+
+    public static void drawRect2(double x, double y, double x2, double y2, int color) {
+        Gui.drawRect((int) x, (int) y, (int) x2, (int) y2, color);
+    }
+
+
+    public static void drawBordered(double x, double y, double x2, double y2, double thickness, int inside, int outline) {
+        double fix = 0.0;
+        if (thickness < 1.0) {
+            fix = 1.0;
+        }
+        drawRect2(x + thickness, y + thickness, x2 - thickness, y2 - thickness, inside);
+        drawRect2(x, y + 1.0 - fix, x + thickness, y2, outline);
+        drawRect2(x, y, x2 - 1.0 + fix, y + thickness, outline);
+        drawRect2(x2 - thickness, y, x2, y2 - 1.0 + fix, outline);
+        drawRect2(x + 1.0 - fix, y2 - thickness, x2, y2, outline);
+    }
+
 }

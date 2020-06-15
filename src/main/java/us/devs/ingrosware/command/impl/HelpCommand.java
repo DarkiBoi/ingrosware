@@ -1,9 +1,12 @@
 package us.devs.ingrosware.command.impl;
 
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.HoverEvent;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.command.Command;
 import us.devs.ingrosware.command.annotation.CommandManifest;
-import us.devs.ingrosware.util.other.Logger;
+import us.devs.ingrosware.util.other.chat.ChatBuilder;
+import us.devs.ingrosware.util.other.chat.ChatColor;
 
 /**
  * made for Ingros
@@ -16,9 +19,11 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(String[] args) {
-        StringBuilder stringBuilder = new StringBuilder();
-        IngrosWare.INSTANCE.getCommandManager().getValues().forEach(command ->
-                stringBuilder.append(command.getLabel()).append(" - ").append(command.getDescription()).append("\n"));
-        Logger.printMessage(stringBuilder.toString());
+        final ChatBuilder chatBuilder = clientChatMsg();
+
+        IngrosWare.INSTANCE.getCommandManager().getValues().forEach(command -> {
+            chatBuilder.appendText(command.getLabel(), ChatColor.GRAY, new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command.getDescription()))).appendText(", ", new ChatColor[0]);
+        });
+        chatBuilder.send();
     }
 }

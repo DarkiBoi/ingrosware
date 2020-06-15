@@ -6,6 +6,7 @@ import us.devs.ingrosware.command.Command;
 import us.devs.ingrosware.command.annotation.CommandManifest;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.util.other.Logger;
+import us.devs.ingrosware.util.other.chat.ChatColor;
 
 @CommandManifest(label = "Keybind", description = "set a module keybind!", handles = {"bind","key"})
 public class BindCommand extends Command {
@@ -19,17 +20,15 @@ public class BindCommand extends Command {
                 final int keyCode = Keyboard.getKeyIndex(args[2].toUpperCase());
                 if (keyCode != -1) {
                     module.setBind(keyCode);
-                    Logger.printMessage(module.getLabel() + " is now bound to \"" + Keyboard.getKeyName(keyCode) + "\".");
+                    clientChatMsg().appendText(module.getLabel(), new ChatColor[0]).appendText(" is now bound to ", new ChatColor[0]).appendText(Keyboard.getKeyName(keyCode), new ChatColor[0]).send();
                 } else {
-                    Logger.printMessage("That is not a valid key code.");
+                    clientChatMsg().appendText("This is not a valid key code.", ChatColor.RED).send();
                 }
             } else {
-                Logger.printMessage("That module does not exist.");
-                Logger.printMessage("Type \"modules\" for a list of all modules.");
+                clientChatMsg().appendText("That module does not exist!", ChatColor.RED).send();
             }
         } else {
-            Logger.printMessage("Invalid arguments.");
-            Logger.printMessage("Usage: \"bind [module] [key]\"");
+            clientChatMsg().appendText("Invalid arguments!", ChatColor.RED).appendText(" Usage: -bind [module] [key]", new ChatColor[0]).send();
         }
     }
 }

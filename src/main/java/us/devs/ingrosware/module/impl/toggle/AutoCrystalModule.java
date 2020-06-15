@@ -307,7 +307,7 @@ public class AutoCrystalModule extends ToggleableModule {
     }
 
     private boolean isValidEntity(final Entity entity) {
-        return (entity instanceof EntityLivingBase && entity.getEntityId() != -1488 && entity != mc.player && entity.isEntityAlive() && !IngrosWare.INSTANCE.getFriendManager().isFriend(entity.getName()) && (!entity.isInvisible() || invisibles) && mc.player.getDistanceSqToEntity(entity) <= targetRange * targetRange && ((entity instanceof EntityPlayer && players) || ((entity instanceof EntityMob || entity instanceof EntityGolem) && monsters) || (entity instanceof EntityAnimal && animals))) || (passives && (entity instanceof EntityIronGolem || entity instanceof EntityAmbientCreature));
+        return (entity instanceof EntityLivingBase && entity.getEntityId() != -1488 && entity != mc.player && entity.isEntityAlive() && !IngrosWare.INSTANCE.getFriendManager().get(entity.getName()).isPresent() && (!entity.isInvisible() || invisibles) && mc.player.getDistanceSqToEntity(entity) <= targetRange * targetRange && ((entity instanceof EntityPlayer && players) || ((entity instanceof EntityMob || entity instanceof EntityGolem) && monsters) || (entity instanceof EntityAnimal && animals))) || (passives && (entity instanceof EntityIronGolem || entity instanceof EntityAmbientCreature));
     }
 
     private boolean isValidCrystal(final Entity entity) {
