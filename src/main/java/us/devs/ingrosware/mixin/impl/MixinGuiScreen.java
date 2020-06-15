@@ -1,5 +1,6 @@
 package us.devs.ingrosware.mixin.impl;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +15,7 @@ public class MixinGuiScreen {
 
     @Inject(method = "renderToolTip", at = @At("HEAD"), cancellable = true)
     public void renderToolTip(ItemStack stack, int x, int y, CallbackInfo info) {
-        if (stack != null) {
+        if (Minecraft.getMinecraft().ingameGUI != null && Minecraft.getMinecraft().currentScreen != null && stack != null) {
             final RenderToolTipEvent event = new RenderToolTipEvent(stack, x, y);
             IngrosWare.INSTANCE.getBus().post(event);
             if (event.isCancelled()) {

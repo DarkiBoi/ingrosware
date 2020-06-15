@@ -2,9 +2,11 @@ package us.devs.ingrosware.mixin.impl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.Session;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -13,6 +15,7 @@ import us.devs.ingrosware.event.impl.other.FullScreenEvent;
 import us.devs.ingrosware.event.impl.other.KeyPressEvent;
 import us.devs.ingrosware.event.impl.other.ResizeEvent;
 import us.devs.ingrosware.event.impl.other.TickEvent;
+import us.devs.ingrosware.mixin.accessors.IMinecraft;
 
 /**
  * made for Ingros
@@ -21,11 +24,19 @@ import us.devs.ingrosware.event.impl.other.TickEvent;
  * @since 6/13/2020
  **/
 @Mixin(Minecraft.class)
-public class MixinMinecraft {
+public abstract class MixinMinecraft implements IMinecraft {
     @Shadow
     public int displayWidth;
     @Shadow
     public int displayHeight;
+
+    @Accessor
+    @Override
+    public abstract void setSession(Session session);
+
+    @Accessor
+    @Override
+    public abstract void setRightClickDelayTimer(int delay);
 
     @Inject(method = "init", at = @At("RETURN"))
     private void init(CallbackInfo ci) {

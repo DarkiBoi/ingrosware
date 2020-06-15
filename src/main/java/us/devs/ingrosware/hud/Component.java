@@ -3,8 +3,11 @@ package us.devs.ingrosware.hud;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import org.apache.commons.lang3.StringEscapeUtils;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.hud.annotation.ComponentManifest;
+import us.devs.ingrosware.setting.impl.ColorSetting;
+import us.devs.ingrosware.setting.impl.StringSetting;
 import us.devs.ingrosware.traits.Configable;
 import us.devs.ingrosware.traits.Hideable;
 import us.devs.ingrosware.traits.Labelable;
@@ -87,8 +90,18 @@ public class Component implements Labelable, Hideable, Configable {
         directory.addProperty("x", x);
         directory.addProperty("y", y);
         directory.addProperty("hidden", hidden);
-        if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null)
-            IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> directory.addProperty(property.getLabel(), property.getValue().toString()));
+        if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
+            IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> {
+                if (property instanceof ColorSetting) {
+                    final ColorSetting colorSetting = (ColorSetting) property;
+                    directory.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
+                } else if (property instanceof StringSetting) {
+                    final StringSetting stringSetting = (StringSetting) property;
+                    final String escapedStr = StringEscapeUtils.escapeJava(stringSetting.getValue());
+                    directory.addProperty(property.getLabel(), escapedStr);
+                } else directory.addProperty(property.getLabel(), property.getValue().toString());
+            });
+        }
     }
 
     @Override
@@ -110,7 +123,15 @@ public class Component implements Labelable, Hideable, Configable {
             }
         });
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
-            directory.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> property.setValue(entry.getValue().getAsString())));
+            directory.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> {
+                if (property instanceof ColorSetting) {
+                    final ColorSetting colorSetting = (ColorSetting) property;
+                    colorSetting.setValue(entry.getValue().getAsString());
+                } else if (property instanceof StringSetting) {
+                    final StringSetting stringSetting = (StringSetting) property;
+                    stringSetting.setValue(StringEscapeUtils.unescapeJava(entry.getValue().getAsString()));
+                } else property.setValue(entry.getValue().getAsString());
+            }));
         }
     }
 

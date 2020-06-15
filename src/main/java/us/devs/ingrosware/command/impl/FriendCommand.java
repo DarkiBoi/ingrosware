@@ -23,7 +23,7 @@ public class FriendCommand extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length < 2 || args.length > 3) {
-            clientChatMsg().appendText("Invalud args", ChatColor.RED).send();
+            clientChatMsg().appendText("Invalid args", ChatColor.RED).send();
             return;
         }
         final String lowerCase = args[0].toLowerCase();
@@ -50,7 +50,6 @@ public class FriendCommand extends Command {
                         return;
                     }
                     IngrosWare.INSTANCE.getFriendManager().add(player.getGameProfile().getId(), nickName);
-                    clientChatMsg().appendText("Added ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
                 } else {
                     clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" is not in the server, fetching id...", new ChatColor[0]).send();
                     uuid = ProfileHelper.INSTANCE.getUUID(name);
@@ -64,8 +63,8 @@ public class FriendCommand extends Command {
                     }
 
                     IngrosWare.INSTANCE.getFriendManager().add(uuid, nickName);
-                    clientChatMsg().appendText("Added ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
                 }
+                clientChatMsg().appendText("Added ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
                 break;
             }
             case "r":

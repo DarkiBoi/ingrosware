@@ -28,7 +28,7 @@ public class ShulkerPreviewModule extends ToggleableModule {
 
     @Subscribe
     public void onRender(RenderToolTipEvent event) {
-        if (mc.player == null) return;
+        if (mc.world == null || mc.player == null || !mc.player.isEntityAlive() ||event.getStack().getItem() == null) return;
         if (event.getStack().getItem() instanceof ItemShulkerBox) {
             NBTTagCompound tagCompound = event.getStack().getTagCompound();
             if (tagCompound != null && tagCompound.hasKey("BlockEntityTag", 10)) {
