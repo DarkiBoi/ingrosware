@@ -1,8 +1,8 @@
 package us.devs.ingrosware.event.impl.entity;
 
-import tcb.bces.event.Event;
+import tcb.bces.event.EventCancellable;
 
-public class JumpEvent extends Event {
+public class JumpEvent extends EventCancellable {
     private float x, y, z;
 
     public JumpEvent(float x, float y, float z) {

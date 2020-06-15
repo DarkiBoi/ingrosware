@@ -12,6 +12,7 @@ import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.other.FullScreenEvent;
 import us.devs.ingrosware.event.impl.other.KeyPressEvent;
 import us.devs.ingrosware.event.impl.other.ResizeEvent;
+import us.devs.ingrosware.event.impl.other.TickEvent;
 
 /**
  * made for Ingros
@@ -41,6 +42,11 @@ public class MixinMinecraft {
         final int i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
         if (Keyboard.getEventKeyState())
             IngrosWare.INSTANCE.getBus().post(new KeyPressEvent(i));
+    }
+
+    @Inject(method = "runTick", at = @At("HEAD"))
+    private void onTick(CallbackInfo info) {
+        IngrosWare.INSTANCE.getBus().post(new TickEvent());
     }
 
     @Inject(method = "toggleFullscreen", at = @At("RETURN"))

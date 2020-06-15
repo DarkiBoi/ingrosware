@@ -7,12 +7,14 @@ import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.hud.GuiHudEditor;
 import us.devs.ingrosware.gui.hud.settings.components.HudSetting;
 import us.devs.ingrosware.gui.hud.settings.components.impl.BooleanButton;
+import us.devs.ingrosware.gui.hud.settings.components.impl.ColorButton;
 import us.devs.ingrosware.gui.hud.settings.components.impl.NumberButton;
 import us.devs.ingrosware.gui.hud.settings.components.impl.StringButton;
 import us.devs.ingrosware.hud.Component;
 import us.devs.ingrosware.setting.AbstractSetting;
 import us.devs.ingrosware.setting.ISetting;
 import us.devs.ingrosware.setting.impl.BooleanSetting;
+import us.devs.ingrosware.setting.impl.ColorSetting;
 import us.devs.ingrosware.setting.impl.NumberSetting;
 import us.devs.ingrosware.setting.impl.StringSetting;
 import us.devs.ingrosware.util.render.RenderUtil;
@@ -61,6 +63,11 @@ public class HudSettings extends GuiScreen {
                     StringSetting stringValue = (StringSetting) setting;
                     components.add(new StringButton(stringValue,width / 2 - 90,y));
                     y += 16;
+                }
+                if(setting instanceof ColorSetting) {
+                    ColorSetting colorSetting = (ColorSetting) setting;
+                    components.add(new ColorButton(colorSetting,width / 2 - 90,y));
+                    y += 26;
                 }
             }
         }

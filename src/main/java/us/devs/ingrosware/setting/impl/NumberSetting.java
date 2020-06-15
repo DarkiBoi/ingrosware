@@ -34,14 +34,18 @@ public class NumberSetting<T extends Number> extends AbstractSetting<T> {
 
     @Override
     public void setValue(String value) {
-        if (cls == Integer.class || cls == Integer.TYPE) {
-            setValue((T) NumberUtils.createInteger(value));
-        } else if (cls == Double.class || cls == Double.TYPE) {
-            setValue((T) NumberUtils.createDouble(value));
-        } else if (cls == Float.class || cls == Float.TYPE) {
-            setValue((T) NumberUtils.createFloat(value));
-        } else if (cls == Long.class || cls == Long.TYPE) {
-            setValue((T) NumberUtils.createLong(value));
+        try {
+            if (cls == Integer.class || cls == Integer.TYPE) {
+                setValue((T) NumberUtils.createInteger(value));
+            } else if (cls == Double.class || cls == Double.TYPE) {
+                setValue((T) NumberUtils.createDouble(value));
+            } else if (cls == Float.class || cls == Float.TYPE) {
+                setValue((T) NumberUtils.createFloat(value));
+            } else if (cls == Long.class || cls == Long.TYPE) {
+                setValue((T) NumberUtils.createLong(value));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
