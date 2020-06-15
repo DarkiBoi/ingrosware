@@ -12,7 +12,12 @@ import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.setting.annotation.Setting;
 
-
+/**
+ * Made for IngrosWare-Recode
+ *
+ * @author oHare
+ * @since 6/14/2020
+ **/
 @Toggleable(label = "NoVelocity", category = ModuleCategory.COMBAT,color = 0x717171,bind = Keyboard.KEY_NONE)
 public class NoVelocityModule extends ToggleableModule {
     private boolean once;

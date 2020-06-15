@@ -3,6 +3,7 @@ package us.devs.ingrosware.command.manager;
 import com.google.common.reflect.ClassPath;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.command.Command;
+import us.devs.ingrosware.command.type.HudComponentCommand;
 import us.devs.ingrosware.command.type.ModuleCommand;
 import us.devs.ingrosware.manager.impl.AbstractMapManager;
 import us.devs.ingrosware.util.ClassUtil;
@@ -34,6 +35,10 @@ public class CommandManager extends AbstractMapManager<String, Command> {
         IngrosWare.INSTANCE.getModuleManager().getValues().forEach(module -> {
             if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(module) != null)
                 register(new ModuleCommand(module));
+        });
+        IngrosWare.INSTANCE.getComponentManager().getValues().forEach(component -> {
+            if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(component) != null)
+                register(new HudComponentCommand(component));
         });
     }
 

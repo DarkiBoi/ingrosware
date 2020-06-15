@@ -1,6 +1,7 @@
 package us.devs.ingrosware.mixin.impl;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.other.FullScreenEvent;
 import us.devs.ingrosware.event.impl.other.KeyPressEvent;
+import us.devs.ingrosware.event.impl.other.ResizeEvent;
 
 /**
  * made for Ingros
@@ -45,5 +47,12 @@ public class MixinMinecraft {
     private void onToggleFullscreen(CallbackInfo info) {
         IngrosWare.INSTANCE.getBus().post(new FullScreenEvent(displayWidth, displayHeight));
     }
-
+    @Inject(method = "resize", at = @At("RETURN"))
+    private void onResize(CallbackInfo info) {
+        if (Minecraft.getMinecraft().currentScreen != null) {
+            final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+            final ResizeEvent rsevent = new ResizeEvent(scaledresolution);
+            IngrosWare.INSTANCE.getBus().post(rsevent);
+        }
+    }
 }

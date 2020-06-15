@@ -10,6 +10,12 @@ import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
 
+/**
+ * Made for IngrosWare-Recode
+ *
+ * @author oHare
+ * @since 6/14/2020
+ **/
 @Toggleable(label = "NoRotate", category = ModuleCategory.OTHER,color = 0xfff33f00,bind = Keyboard.KEY_NONE)
 public class NoRotateModule extends ToggleableModule {
 

@@ -43,14 +43,7 @@ public class RenderUtil {
         int factor = sr.getScaleFactor();
         GL11.glScissor((int) (x * factor), (int) ((sr.getScaledHeight() - y2) * factor), (int) ((x2 - x) * factor), (int) ((y2 - y) * factor));
     }
-    public static void glBillboard(float x, float y, float z) {
-        float scale = 0.016666668f * 1.6f;
-        GlStateManager.translate(x - ((IRenderManager) mc.getRenderManager()).getRenderPosX(), y - ((IRenderManager) mc.getRenderManager()).getRenderPosY(), z - ((IRenderManager) mc.getRenderManager()).getRenderPosZ());
-        GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
-        GlStateManager.rotate(-mc.player.rotationYaw, 0.0f, 1.0f, 0.0f);
-        GlStateManager.rotate(mc.player.rotationPitch, mc.gameSettings.thirdPersonView == 2 ? -1.0f : 1.0f, 0.0f, 0.0f);
-        GlStateManager.scale(-scale, -scale, scale);
-    }
+
     public static void drawCircle(float x, float y, float r, int c) {
         float f = (c >> 24 & 0xFF) / 255.0f;
         float f2 = (c >> 16 & 0xFF) / 255.0f;
@@ -80,15 +73,6 @@ public class RenderUtil {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GL11.glPopMatrix();
-    }
-
-    public static void glBillboardDistanceScaled(float x, float y, float z, EntityPlayer player, float scale) {
-        glBillboard(x, y, z);
-        int distance = (int) player.getDistance(x, y, z);
-        float scaleDistance = (distance / 2.0f) / (2.0f + (2.0f - scale));
-        if (scaleDistance < 1f)
-            scaleDistance = 1;
-        GlStateManager.scale(scaleDistance, scaleDistance, scaleDistance);
     }
 
     public static void drawBox(AxisAlignedBB boundingBox) {
@@ -377,7 +361,6 @@ public class RenderUtil {
         Gui.drawRect((int) x, (int) y, (int) x2, (int) y2, color);
     }
 
-
     public static void drawBordered(double x, double y, double x2, double y2, double thickness, int inside, int outline) {
         double fix = 0.0;
         if (thickness < 1.0) {
@@ -390,4 +373,31 @@ public class RenderUtil {
         drawRect2(x + 1.0 - fix, y2 - thickness, x2, y2, outline);
     }
 
+    public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
+        float f = (float) (startColor >> 24 & 255) / 255.0F;
+        float f1 = (float) (startColor >> 16 & 255) / 255.0F;
+        float f2 = (float) (startColor >> 8 & 255) / 255.0F;
+        float f3 = (float) (startColor & 255) / 255.0F;
+        float f4 = (float) (endColor >> 24 & 255) / 255.0F;
+        float f5 = (float) (endColor >> 16 & 255) / 255.0F;
+        float f6 = (float) (endColor >> 8 & 255) / 255.0F;
+        float f7 = (float) (endColor & 255) / 255.0F;
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.shadeModel(7425);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos(right, top, 300).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.pos(left, top, 300).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.pos(left, bottom, 300).color(f5, f6, f7, f4).endVertex();
+        bufferbuilder.pos(right, bottom, 300).color(f5, f6, f7, f4).endVertex();
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+    }
 }

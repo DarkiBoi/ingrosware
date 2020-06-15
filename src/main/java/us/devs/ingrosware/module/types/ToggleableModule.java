@@ -2,10 +2,13 @@ package us.devs.ingrosware.module.types;
 
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.lang3.StringEscapeUtils;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
+import us.devs.ingrosware.setting.impl.ColorSetting;
+import us.devs.ingrosware.setting.impl.StringSetting;
 import us.devs.ingrosware.traits.Hideable;
 import us.devs.ingrosware.traits.Stateable;
 
@@ -102,12 +105,45 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
 
     @Override
     public void save(JsonObject destination) {
-
+        destination.addProperty("State", getState());
+        destination.addProperty("Bind", getBind());
+        destination.addProperty("Hidden", isHidden());
+        if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
+            IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> {
+                if (property instanceof ColorSetting) {
+                    final ColorSetting colorSetting = (ColorSetting) property;
+                    destination.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
+                } else if (property instanceof StringSetting) {
+                    final StringSetting stringSetting = (StringSetting) property;
+                    final String escapedStr = StringEscapeUtils.escapeJava(stringSetting.getValue());
+                    destination.addProperty(property.getLabel(), escapedStr);
+                } else destination.addProperty(property.getLabel(), property.getValue().toString());
+            });
+        }
     }
 
     @Override
     public void load(JsonObject source) {
-
+        if (source.has("State") && source.get("State").getAsBoolean()) {
+            setState(true);
+        }
+        if (source.has("Bind")) {
+            setBind(source.get("Bind").getAsInt());
+        }
+        if (source.has("Hidden") && source.get("Hidden").getAsBoolean()) {
+            setHidden(true);
+        }
+        if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
+            source.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> {
+                if (property instanceof ColorSetting) {
+                    final ColorSetting colorSetting = (ColorSetting) property;
+                    colorSetting.setValue(entry.getValue().getAsString());
+                } else if (property instanceof StringSetting) {
+                    final StringSetting stringSetting = (StringSetting) property;
+                    stringSetting.setValue(StringEscapeUtils.unescapeJava(entry.getValue().getAsString()));
+                } else property.setValue(entry.getValue().getAsString());
+            }));
+        }
     }
 
     @Override

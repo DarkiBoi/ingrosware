@@ -1,5 +1,6 @@
 package us.devs.ingrosware.module.impl.toggle;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -45,7 +46,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-
+/**
+ * Made for IngrosWare-Recode
+ *
+ * @author oHare
+ * @since 6/14/2020
+ **/
 @Toggleable(label = "AutoCrystal", category = ModuleCategory.COMBAT, color = 0xffff0000, bind = Keyboard.KEY_NONE)
 public class AutoCrystalModule extends ToggleableModule {
     private EntityLivingBase target;
@@ -106,14 +112,12 @@ public class AutoCrystalModule extends ToggleableModule {
         placeTimer.reset();
         breakTimer.reset();
         crystalPos = null;
-        target= null;
+        target = null;
     }
 
     @Subscribe
-    public void onUpdate(final UpdateEvent event) {
-        if (mc.world == null || mc.player == null) {
-            return;
-        }
+    public void onUpdate(UpdateEvent event) {
+        if (mc.world == null || mc.player == null) return;
         int crystalSlot = (mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL) ? mc.player.inventory.currentItem : -1;
         if (crystalSlot == -1) {
             for (int l = 0; l < 9; ++l) {
@@ -123,17 +127,13 @@ public class AutoCrystalModule extends ToggleableModule {
                 }
             }
         }
-        boolean offhand = false;
-        if (mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
-            offhand = true;
-        }
-        else if (crystalSlot == -1) {
-            return;
-        }
+        final boolean offhand = mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL;
+        if (!offhand && crystalSlot == -1) return;
         target = getTarget();
         if (target != null) {
-            crystalPos = getPlacePosition();
             final EntityEnderCrystal enderCrystal = getCrystal();
+            crystalPos = null;
+            if (enderCrystal == null) crystalPos = getPlacePosition();
             if (crystalPos == null) {
                 placeTimer.reset();
             }
@@ -146,31 +146,26 @@ public class AutoCrystalModule extends ToggleableModule {
                     if (showRotations) {
                         mc.player.rotationYaw = crystalRotations[0];
                         mc.player.rotationPitch = crystalRotations[1];
-                    }
-                    else {
+                    } else {
                         event.setYaw(crystalRotations[0]);
                         event.setPitch(crystalRotations[1]);
                     }
-                    return;
                 }
                 if (crystalPos != null) {
                     final float[] crystalPosRotations = getRotationsToward(crystalPos);
                     if (showRotations) {
                         mc.player.rotationYaw = crystalPosRotations[0];
                         mc.player.rotationPitch = crystalPosRotations[1];
-                    }
-                    else {
+                    } else {
                         event.setYaw(crystalPosRotations[0]);
                         event.setPitch(crystalPosRotations[1]);
                     }
                 }
-            }
-            else {
+            } else {
                 if (enderCrystal != null && breakTimer.reach(breakDelay)) {
                     mc.player.connection.sendPacket(new CPacketUseEntity(enderCrystal));
                     mc.player.swingArm(EnumHand.MAIN_HAND);
                     breakTimer.reset();
-                    return;
                 }
                 if (crystalPos != null && placeTimer.reach(placeDelay)) {
                     if (!offhand) {
@@ -180,38 +175,46 @@ public class AutoCrystalModule extends ToggleableModule {
                     placeTimer.reset();
                 }
             }
-        }
-        else {
+        } else {
             breakTimer.reset();
             placeTimer.reset();
         }
     }
 
     @Subscribe
-    public void onRender3D(final Render3DEvent event) {
-        if (crystalPos != null && target != null) {
-            final AxisAlignedBB bb = new AxisAlignedBB(crystalPos.getX() - mc.getRenderManager().viewerPosX, crystalPos.getY() - mc.getRenderManager().viewerPosY + 1.0, crystalPos.getZ() - mc.getRenderManager().viewerPosZ, crystalPos.getX() + 1 - mc.getRenderManager().viewerPosX, crystalPos.getY() + 1.2 - mc.getRenderManager().viewerPosY, crystalPos.getZ() + 1 - mc.getRenderManager().viewerPosZ);
-            if (RenderUtil.isInViewFrustrum(new AxisAlignedBB(bb.minX + mc.getRenderManager().viewerPosX, bb.minY + mc.getRenderManager().viewerPosY, bb.minZ + mc.getRenderManager().viewerPosZ, bb.maxX + mc.getRenderManager().viewerPosX, bb.maxY + mc.getRenderManager().viewerPosY, bb.maxZ + mc.getRenderManager().viewerPosZ))) {
-                RenderUtil.drawESP(bb, (float)color.getRed(), (float)color.getGreen(), (float)color.getBlue(), 40.0f);
-                RenderUtil.drawESPOutline(bb, (float)color.getRed(), (float)color.getGreen(), (float)color.getBlue(), 255.0f, 1.0f);
-                final double posX = crystalPos.getX() - ((IRenderManager)mc.getRenderManager()).getRenderPosX();
-                final double posY = crystalPos.getY() - ((IRenderManager)mc.getRenderManager()).getRenderPosY();
-                final double posZ = crystalPos.getZ() - ((IRenderManager)mc.getRenderManager()).getRenderPosZ();
-                RenderUtil.renderTag(Math.floor(calculateDamage(crystalPos, target)) + "hp", posX + 0.5, posY, posZ + 0.5, color.getRGB());
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                RenderHelper.disableStandardItemLighting();
+    public void onRender3D(Render3DEvent event) {
+        if (mc.world == null || mc.player == null) return;
+        if (target != null) {
+            final double posXTarget = RenderUtil.interpolate(target.posX, target.lastTickPosX, event.getPartialTicks()) - ((IRenderManager) mc.getRenderManager()).getRenderPosX();
+            final double posYTarget = RenderUtil.interpolate(target.posY, target.lastTickPosY, event.getPartialTicks()) - ((IRenderManager) mc.getRenderManager()).getRenderPosY();
+            final double posZTarget = RenderUtil.interpolate(target.posZ, target.lastTickPosZ, event.getPartialTicks()) - ((IRenderManager) mc.getRenderManager()).getRenderPosZ();
+            RenderUtil.drawESP(new AxisAlignedBB(0.0, 0.0, 0.0, target.width, target.height, target.width).offset(posXTarget - target.width / 2, posYTarget, posZTarget - target.width / 2), color.getRed(), color.getGreen(), color.getBlue(), 40F);
+            RenderUtil.drawESPOutline(new AxisAlignedBB(0.0, 0.0, 0.0, target.width, target.height, target.width).offset(posXTarget - target.width / 2, posYTarget, posZTarget - target.width / 2), color.getRed(), color.getGreen(), color.getBlue(), 255f, 1f);
+            if (crystalPos != null) {
+                final AxisAlignedBB bb = new AxisAlignedBB(crystalPos.getX() - mc.getRenderManager().viewerPosX, crystalPos.getY() - mc.getRenderManager().viewerPosY + 1.0, crystalPos.getZ() - mc.getRenderManager().viewerPosZ, crystalPos.getX() + 1 - mc.getRenderManager().viewerPosX, crystalPos.getY() + 1.2 - mc.getRenderManager().viewerPosY, crystalPos.getZ() + 1 - mc.getRenderManager().viewerPosZ);
+                if (RenderUtil.isInViewFrustrum(new AxisAlignedBB(bb.minX + mc.getRenderManager().viewerPosX, bb.minY + mc.getRenderManager().viewerPosY, bb.minZ + mc.getRenderManager().viewerPosZ, bb.maxX + mc.getRenderManager().viewerPosX, bb.maxY + mc.getRenderManager().viewerPosY, bb.maxZ + mc.getRenderManager().viewerPosZ))) {
+                    RenderUtil.drawESP(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 40.0f);
+                    RenderUtil.drawESPOutline(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 255.0f, 1.0f);
+                    final double posX = crystalPos.getX() - ((IRenderManager) mc.getRenderManager()).getRenderPosX();
+                    final double posY = crystalPos.getY() - ((IRenderManager) mc.getRenderManager()).getRenderPosY();
+                    final double posZ = crystalPos.getZ() - ((IRenderManager) mc.getRenderManager()).getRenderPosZ();
+                    RenderUtil.renderTag(Math.floor(calculateDamage(crystalPos, target)) + "hp", posX + 0.5, posY, posZ + 0.5, color.getRGB());
+                    GlStateManager.enableDepth();
+                    GlStateManager.depthMask(true);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    RenderHelper.disableStandardItemLighting();
+                }
             }
         }
     }
 
     @Subscribe
-    public void onPacket(final PacketEvent event) {
+    public void onPacket(PacketEvent event) {
+        if (mc.world == null || mc.player == null) return;
         if (event.getType() == EventType.POST && event.getPacket() instanceof SPacketSoundEffect) {
-            final SPacketSoundEffect packet = (SPacketSoundEffect)event.getPacket();
+            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
                 for (final Entity e : mc.world.loadedEntityList) {
                     if (e instanceof EntityEnderCrystal && e.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0) {
@@ -224,28 +227,22 @@ public class AutoCrystalModule extends ToggleableModule {
 
     private EntityEnderCrystal getCrystal() {
         double minVal = Double.POSITIVE_INFINITY;
-        float damage = minDamage;
+        float damage = minDamage - 0.5f;
         Entity bestEntity = null;
         for (final Entity e : mc.world.loadedEntityList) {
             if (e instanceof EntityEnderCrystal) {
-                final double val = getSortingWeightCrystal((EntityEnderCrystal)e);
-                if (!isValidCrystal(e) || val >= minVal) {
-                    continue;
-                }
+                final double val = getSortingWeightCrystal((EntityEnderCrystal) e);
+                if (!isValidCrystal(e) || val >= minVal) continue;
                 final float targetDamage = calculateDamage(e, target);
                 final float selfDamage = calculateDamage(e, mc.player);
-                if ((targetDamage <= damage && targetDamage <= target.getHealth() + target.getAbsorptionAmount() && targetDamage <= faceDamage) || targetDamage <= selfDamage || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount()) {
+                if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || targetDamage <= selfDamage || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || selfDamage >= maxSelfDamage)
                     continue;
-                }
-                if (selfDamage >= maxSelfDamage) {
-                    continue;
-                }
                 minVal = val;
                 bestEntity = e;
                 damage = targetDamage;
             }
         }
-        return (EntityEnderCrystal)bestEntity;
+        return (EntityEnderCrystal) bestEntity;
     }
 
     private EntityLivingBase getTarget() {
@@ -258,22 +255,19 @@ public class AutoCrystalModule extends ToggleableModule {
                 bestEntity = e;
             }
         }
-        return (EntityLivingBase)bestEntity;
+        return (EntityLivingBase) bestEntity;
     }
 
     private BlockPos getPlacePosition() {
         BlockPos placePosition = null;
-        float damage = minDamage;
+        float damage = minDamage - 0.5f;
         for (final BlockPos pos : possiblePlacePositions(crystalRange, antiSurround)) {
             final float targetDamage = calculateDamage(pos, target);
             final float selfDamage = calculateDamage(pos, mc.player);
-            if ((targetDamage > damage || targetDamage > target.getHealth() + target.getAbsorptionAmount() || targetDamage > faceDamage) && targetDamage > selfDamage && selfDamage < mc.player.getHealth() + mc.player.getAbsorptionAmount()) {
-                if (selfDamage >= maxSelfDamage) {
-                    continue;
-                }
-                placePosition = pos;
-                damage = targetDamage;
-            }
+            if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || targetDamage <= selfDamage || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || selfDamage >= maxSelfDamage)
+                continue;
+            placePosition = pos;
+            damage = targetDamage;
         }
         return placePosition;
     }
@@ -281,15 +275,12 @@ public class AutoCrystalModule extends ToggleableModule {
     private double getSortingWeightTarget(final Entity e) {
         final String upperCase = targetSortMode.toUpperCase();
         switch (upperCase) {
-            case "FOV": {
+            case "FOV":
                 return yawDist(e);
-            }
-            case "HEALTH": {
-                return (e instanceof EntityLivingBase) ? ((EntityLivingBase)e).getHealth() : Double.POSITIVE_INFINITY;
-            }
-            default: {
+            case "HEALTH":
+                return (e instanceof EntityLivingBase) ? ((EntityLivingBase) e).getHealth() : Double.POSITIVE_INFINITY;
+            default:
                 return mc.player.getDistanceSqToEntity(e);
-            }
         }
     }
 
@@ -319,9 +310,9 @@ public class AutoCrystalModule extends ToggleableModule {
         final double yDist = blockPos.getY() - (mc.player.posY + mc.player.getEyeHeight());
         final double zDist = blockPos.getZ() + 0.5f - mc.player.posZ;
         final double fDist = MathHelper.sqrt(xDist * xDist + zDist * zDist);
-        final float yaw = fixRotation(mc.player.rotationYaw, (float)(MathHelper.atan2(zDist, xDist) * 180.0 / 3.141592653589793) - 90.0f);
-        final float pitch = fixRotation(mc.player.rotationPitch, (float)(-(MathHelper.atan2(yDist, fDist) * 180.0 / 3.141592653589793)));
-        return new float[] { yaw, pitch };
+        final float yaw = fixRotation(mc.player.rotationYaw, (float) (MathHelper.atan2(zDist, xDist) * 180.0 / 3.141592653589793) - 90.0f);
+        final float pitch = fixRotation(mc.player.rotationPitch, (float) (-(MathHelper.atan2(yDist, fDist) * 180.0 / 3.141592653589793)));
+        return new float[]{yaw, pitch};
     }
 
     private float fixRotation(final float p_70663_1_, final float p_70663_2_) {
@@ -342,29 +333,29 @@ public class AutoCrystalModule extends ToggleableModule {
         double blockDensity = 0.0;
         try {
             blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) {}
         final double v = (1.0 - distancedsize) * blockDensity;
-        final float damage = (float)(int)((v * v + v) / 2.0 * 7.0 * doubleExplosionSize + 1.0);
+        final float damage = (float) (int) ((v * v + v) / 2.0 * 7.0 * doubleExplosionSize + 1.0);
         double finald = 1.0;
         if (entity instanceof EntityLivingBase) {
-            finald = getBlastReduction((EntityLivingBase)entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6.0f, false, true));
+            finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6.0f, false, true));
         }
-        return (float)finald;
+        return (float) finald;
     }
 
     private float getBlastReduction(final EntityLivingBase entity, final float damageI, final Explosion explosion) {
         float damage = damageI;
         if (entity instanceof EntityPlayer) {
-            final EntityPlayer ep = (EntityPlayer)entity;
+            final EntityPlayer ep = (EntityPlayer) entity;
             final DamageSource ds = DamageSource.causeExplosionDamage(explosion);
-            damage = CombatRules.getDamageAfterAbsorb(damage, (float)ep.getTotalArmorValue(), (float)ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+            damage = CombatRules.getDamageAfterAbsorb(damage, (float) ep.getTotalArmorValue(), (float) ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
             int k = 0;
             try {
                 k = EnchantmentHelper.getEnchantmentModifierDamage(ep.getArmorInventoryList(), ds);
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
-            final float f = MathHelper.clamp((float)k, 0.0f, 20.0f);
+            final float f = MathHelper.clamp((float) k, 0.0f, 20.0f);
             damage *= 1.0f - f / 25.0f;
             if (entity.isPotionActive(MobEffects.RESISTANCE)) {
                 damage -= damage / 4.0f;
@@ -372,7 +363,7 @@ public class AutoCrystalModule extends ToggleableModule {
             damage = Math.max(damage, 0.0f);
             return damage;
         }
-        damage = CombatRules.getDamageAfterAbsorb(damage, (float)entity.getTotalArmorValue(), (float)entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+        damage = CombatRules.getDamageAfterAbsorb(damage, (float) entity.getTotalArmorValue(), (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
         return damage;
     }
 
@@ -390,9 +381,9 @@ public class AutoCrystalModule extends ToggleableModule {
         final int cx = pos.getX();
         final int cy = pos.getY();
         final int cz = pos.getZ();
-        for (int x = cx - (int)r; x <= cx + r; ++x) {
-            for (int z = cz - (int)r; z <= cz + r; ++z) {
-                for (int y = sphere ? (cy - (int)r) : cy; y < (sphere ? (cy + r) : ((float)(cy + h))); ++y) {
+        for (int x = cx - (int) r; x <= cx + r; ++x) {
+            for (int z = cz - (int) r; z <= cz + r; ++z) {
+                for (int y = sphere ? (cy - (int) r) : cy; y < (sphere ? (cy + r) : ((float) (cy + h))); ++y) {
                     final double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? ((cy - y) * (cy - y)) : 0);
                     if (dist < r * r && (!hollow || dist >= (r - 1.0f) * (r - 1.0f))) {
                         final BlockPos l = new BlockPos(x, y + plus_y, z);
@@ -406,7 +397,7 @@ public class AutoCrystalModule extends ToggleableModule {
 
     private NonNullList<BlockPos> possiblePlacePositions(final float placeRange, final boolean specialEntityCheck) {
         final NonNullList<BlockPos> positions = NonNullList.create();
-        positions.addAll(getSphere(new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ)), placeRange, (int)placeRange, false, true, 0).stream().filter(pos -> canPlaceCrystal(pos, specialEntityCheck)).collect(Collectors.toList()));
+        positions.addAll(getSphere(new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ)), placeRange, (int) placeRange, false, true, 0).stream().filter(pos -> canPlaceCrystal(pos, specialEntityCheck)).collect(Collectors.toList()));
         return positions;
     }
 
@@ -423,19 +414,61 @@ public class AutoCrystalModule extends ToggleableModule {
             if (!specialEntityCheck) {
                 return mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost)).isEmpty() && mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
             }
-            for (final Entity entity : mc.world.getEntitiesWithinAABB((Class<? extends Entity>)Entity.class, new AxisAlignedBB(boost))) {
+            for (final Entity entity : mc.world.getEntitiesWithinAABB((Class<? extends Entity>) Entity.class, new AxisAlignedBB(boost))) {
                 if (!(entity instanceof EntityEnderCrystal)) {
                     return false;
                 }
             }
-            for (final Entity entity : mc.world.getEntitiesWithinAABB((Class<? extends Entity>)Entity.class, new AxisAlignedBB(boost2))) {
+            for (final Entity entity : mc.world.getEntitiesWithinAABB((Class<? extends Entity>) Entity.class, new AxisAlignedBB(boost2))) {
                 if (!(entity instanceof EntityEnderCrystal)) {
                     return false;
                 }
+            }
+        } catch (Exception ignored) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isInHole(Entity entity) {
+        return isBlockValid(new BlockPos(entity.posX, entity.posY, entity.posZ));
+    }
+
+    private boolean isBlockValid(BlockPos blockPos) {
+        return isBedrockHole(blockPos) || isObbyHole(blockPos) || isBothHole(blockPos);
+    }
+
+    private boolean isObbyHole(BlockPos blockPos) {
+        BlockPos[] touchingBlocks = new BlockPos[]{blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
+        for (BlockPos pos : touchingBlocks) {
+            IBlockState touchingState = mc.world.getBlockState(pos);
+            if (touchingState.getBlock() == Blocks.AIR || touchingState.getBlock() != Blocks.OBSIDIAN) {
+                return false;
             }
         }
-        catch (Exception ignored) {
-            return false;
+
+        return true;
+    }
+
+    private boolean isBedrockHole(BlockPos blockPos) {
+        BlockPos[] touchingBlocks = new BlockPos[]{blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
+        for (BlockPos pos : touchingBlocks) {
+            IBlockState touchingState = mc.world.getBlockState(pos);
+            if (touchingState.getBlock() == Blocks.AIR || touchingState.getBlock() != Blocks.BEDROCK) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isBothHole(BlockPos blockPos) {
+        BlockPos[] touchingBlocks = new BlockPos[]{blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
+        for (BlockPos pos : touchingBlocks) {
+            IBlockState touchingState = mc.world.getBlockState(pos);
+            if (touchingState.getBlock() == Blocks.AIR || touchingState.getBlock() != Blocks.BEDROCK && touchingState.getBlock() != Blocks.OBSIDIAN) {
+                return false;
+            }
         }
         return true;
     }
