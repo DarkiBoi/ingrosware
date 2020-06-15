@@ -18,6 +18,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSoundEffect;
@@ -25,12 +27,14 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 import tcb.bces.event.EventType;
 import tcb.bces.listener.Subscribe;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.entity.UpdateEvent;
 import us.devs.ingrosware.event.impl.network.PacketEvent;
 import us.devs.ingrosware.event.impl.render.Render3DEvent;
+import us.devs.ingrosware.mixin.accessors.IEntityRenderer;
 import us.devs.ingrosware.mixin.accessors.IRenderManager;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
@@ -85,14 +89,24 @@ public class AutoCrystalModule extends ToggleableModule {
     public int placeDelay = 100;
     @Clamp(maximum = "500")
     @Setting("Break-Delay")
-    public int breakDelay = 100;
+    public int breakDelay = 0;
     @Setting("Color")
     public Color color = new Color(255, 0, 255);
-    @Setting("AntiSurround")
+    @Setting("Anti-Suicide")
+    public boolean antiSuicide = true;
+    @Setting("Anti-Surround")
     public boolean antiSurround = true;
+    @Setting("Mine-Stop")
+    public boolean mineStop = false;
+    @Setting("Food-Stop")
+    public boolean foodStop = false;
+    @Setting("Crystal-Switch")
+    public boolean crystalSwitch = false;
     @Setting("Raytrace")
     public boolean rayTrace = false;
-    @Setting("ShowRotations")
+    @Setting("Rotate")
+    public boolean rotate = true;
+    @Setting("Show-Rotations")
     public boolean showRotations = false;
     @Setting("Invisibles")
     public boolean invisibles = true;
@@ -132,8 +146,8 @@ public class AutoCrystalModule extends ToggleableModule {
         target = getTarget();
         if (target != null) {
             final EntityEnderCrystal enderCrystal = getCrystal();
-            crystalPos = null;
             if (enderCrystal == null) crystalPos = getPlacePosition();
+            else crystalPos = null;
             if (crystalPos == null) {
                 placeTimer.reset();
             }
@@ -141,24 +155,26 @@ public class AutoCrystalModule extends ToggleableModule {
                 breakTimer.reset();
             }
             if (event.getType() == EventType.PRE) {
-                if (enderCrystal != null) {
-                    final float[] crystalRotations = getRotationsToward(enderCrystal.getPosition());
-                    if (showRotations) {
-                        mc.player.rotationYaw = crystalRotations[0];
-                        mc.player.rotationPitch = crystalRotations[1];
-                    } else {
-                        event.setYaw(crystalRotations[0]);
-                        event.setPitch(crystalRotations[1]);
+                if (rotate) {
+                    if (enderCrystal != null) {
+                        final float[] crystalRotations = getRotationsToward(enderCrystal.getPosition());
+                        if (showRotations) {
+                            mc.player.rotationYaw = crystalRotations[0];
+                            mc.player.rotationPitch = crystalRotations[1];
+                        } else {
+                            event.setYaw(crystalRotations[0]);
+                            event.setPitch(crystalRotations[1]);
+                        }
                     }
-                }
-                if (crystalPos != null) {
-                    final float[] crystalPosRotations = getRotationsToward(crystalPos);
-                    if (showRotations) {
-                        mc.player.rotationYaw = crystalPosRotations[0];
-                        mc.player.rotationPitch = crystalPosRotations[1];
-                    } else {
-                        event.setYaw(crystalPosRotations[0]);
-                        event.setPitch(crystalPosRotations[1]);
+                    if (crystalPos != null) {
+                        final float[] crystalPosRotations = getRotationsToward(crystalPos);
+                        if (showRotations) {
+                            mc.player.rotationYaw = crystalPosRotations[0];
+                            mc.player.rotationPitch = crystalPosRotations[1];
+                        } else {
+                            event.setYaw(crystalPosRotations[0]);
+                            event.setPitch(crystalPosRotations[1]);
+                        }
                     }
                 }
             } else {
@@ -168,8 +184,9 @@ public class AutoCrystalModule extends ToggleableModule {
                     breakTimer.reset();
                 }
                 if (crystalPos != null && placeTimer.reach(placeDelay)) {
-                    if (!offhand) {
+                    if (!offhand && crystalSwitch && mc.player.inventory.currentItem != crystalSlot && !(foodStop && mc.player.getHeldItemMainhand().getItem() instanceof ItemFood && mc.player.isHandActive()) && !(mineStop && mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe && mc.player.isSwingInProgress)) {
                         mc.player.inventory.currentItem = crystalSlot;
+                        return;
                     }
                     placeCrystalOnBlock(crystalPos, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
                     placeTimer.reset();
@@ -178,6 +195,7 @@ public class AutoCrystalModule extends ToggleableModule {
         } else {
             breakTimer.reset();
             placeTimer.reset();
+            crystalPos = null;
         }
     }
 
@@ -193,11 +211,11 @@ public class AutoCrystalModule extends ToggleableModule {
             if (crystalPos != null) {
                 final AxisAlignedBB bb = new AxisAlignedBB(crystalPos.getX() - mc.getRenderManager().viewerPosX, crystalPos.getY() - mc.getRenderManager().viewerPosY + 1.0, crystalPos.getZ() - mc.getRenderManager().viewerPosZ, crystalPos.getX() + 1 - mc.getRenderManager().viewerPosX, crystalPos.getY() + 1.2 - mc.getRenderManager().viewerPosY, crystalPos.getZ() + 1 - mc.getRenderManager().viewerPosZ);
                 if (RenderUtil.isInViewFrustrum(new AxisAlignedBB(bb.minX + mc.getRenderManager().viewerPosX, bb.minY + mc.getRenderManager().viewerPosY, bb.minZ + mc.getRenderManager().viewerPosZ, bb.maxX + mc.getRenderManager().viewerPosX, bb.maxY + mc.getRenderManager().viewerPosY, bb.maxZ + mc.getRenderManager().viewerPosZ))) {
-                    RenderUtil.drawESP(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 40.0f);
-                    RenderUtil.drawESPOutline(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 255.0f, 1.0f);
                     final double posX = crystalPos.getX() - ((IRenderManager) mc.getRenderManager()).getRenderPosX();
                     final double posY = crystalPos.getY() - ((IRenderManager) mc.getRenderManager()).getRenderPosY();
                     final double posZ = crystalPos.getZ() - ((IRenderManager) mc.getRenderManager()).getRenderPosZ();
+                    RenderUtil.drawESP(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 40.0f);
+                    RenderUtil.drawESPOutline(bb, (float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), 255.0f, 1.0f);
                     RenderUtil.renderTag(Math.floor(calculateDamage(crystalPos, target)) + "hp", posX + 0.5, posY, posZ + 0.5, color.getRGB());
                     GlStateManager.enableDepth();
                     GlStateManager.depthMask(true);
@@ -235,7 +253,7 @@ public class AutoCrystalModule extends ToggleableModule {
                 if (!isValidCrystal(e) || val >= minVal) continue;
                 final float targetDamage = calculateDamage(e, target);
                 final float selfDamage = calculateDamage(e, mc.player);
-                if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || targetDamage <= selfDamage || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || selfDamage >= maxSelfDamage)
+                if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
                     continue;
                 minVal = val;
                 bestEntity = e;
@@ -264,7 +282,7 @@ public class AutoCrystalModule extends ToggleableModule {
         for (final BlockPos pos : possiblePlacePositions(crystalRange, antiSurround)) {
             final float targetDamage = calculateDamage(pos, target);
             final float selfDamage = calculateDamage(pos, mc.player);
-            if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || targetDamage <= selfDamage || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || selfDamage >= maxSelfDamage)
+            if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
                 continue;
             placePosition = pos;
             damage = targetDamage;
