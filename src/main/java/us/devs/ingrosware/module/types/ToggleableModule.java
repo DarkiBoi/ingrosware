@@ -21,7 +21,7 @@ import java.awt.*;
  * @since 6/13/2020
  **/
 public class ToggleableModule implements IModule, Hideable, Stateable {
-    private String label;
+    private String label, suffix;
     private ModuleCategory category;
     private Color color;
     private int bind;
@@ -93,6 +93,14 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
 
     public void setBind(int bind) {
         this.bind = bind;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     @Override

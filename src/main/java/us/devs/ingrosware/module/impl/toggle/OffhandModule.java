@@ -8,6 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -15,9 +16,11 @@ import org.lwjgl.input.Keyboard;
 import tcb.bces.listener.Subscribe;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.entity.UpdateEvent;
+import us.devs.ingrosware.event.impl.other.KeyPressEvent;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
+import us.devs.ingrosware.setting.annotation.Bind;
 import us.devs.ingrosware.setting.annotation.Clamp;
 import us.devs.ingrosware.setting.annotation.Setting;
 
@@ -30,63 +33,288 @@ import us.devs.ingrosware.setting.annotation.Setting;
  **/
 @Toggleable(label = "Offhand", category = ModuleCategory.COMBAT, color = 0xffff3f0f, bind = Keyboard.KEY_NONE)
 public class OffhandModule extends ToggleableModule {
-    @Clamp(minimum = "1", maximum = "22")
-    @Setting("Health")
-    public int health = 20;
 
-    @Setting("ToggleTotem")
+    @Setting("Toggle-Totem")
     public boolean toggletotem = true;
 
-    @Setting("CrystalCheck")
+    @Setting("Crystal-Check")
     public boolean crystalCheck = true;
 
-    @Setting("HoleCheck")
+    @Setting("Hole-Check")
     public boolean holeCheck = true;
 
+    @Setting("Gap-Swap")
+    public boolean gapSwap = true;
+
+    @Bind(pressed = false)
+    @Setting("Gapple-Bind")
+    public int gappleBind = Keyboard.KEY_NONE;
+
     @Clamp(minimum = "1", maximum = "22")
-    @Setting("HoleHealth")
-    public int holeHealth = 8;
+    @Setting("Gapple-Health")
+    public int gappleHealth = 20;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Gapple-Hole-Health")
+    public int gappleHoleHealth = 8;
+
+    @Bind(pressed = false)
+    @Setting("Crystal-Bind")
+    public int crystalBind = Keyboard.KEY_NONE;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Crystal-Health")
+    public int crystalHealth = 20;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Crystal-Hole-Health")
+    public int crystalHoleHealth = 6;
+
+    @Bind(pressed = false)
+    @Setting("Obsidian-Bind")
+    public int obsidianBind = Keyboard.KEY_NONE;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Obsidian-Health")
+    public int obsidianHealth = 20;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Obsidian-Hole-Health")
+    public int obsidianHoleHealth = 8;
+
+    @Bind(pressed = false)
+    @Setting("Web-Bind")
+    public int webBind = Keyboard.KEY_NONE;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Web-Health")
+    public int webHealth = 20;
+
+    @Clamp(minimum = "1", maximum = "22")
+    @Setting("Web-Hole-Health")
+    public int webHoleHealth = 8;
+
+    @Clamp(minimum = "1")
+    @Setting("TargetRange")
+    public int targetRange = 10;
+
+    public Mode mode = Mode.CRYSTALS;
+    public Mode oldMode = Mode.CRYSTALS;
+    private int oldSlot = -1;
+    private boolean swapToTotem = false, eatingApple = false, oldSwapToTotem = false;
+
+    @Subscribe
+    public void onKeyPress(KeyPressEvent event) {
+        if (crystalBind == event.getKey()) {
+            if (mode == Mode.CRYSTALS) {
+                setSwapToTotem(!isSwapToTotem());
+            } else setSwapToTotem(false);
+            setMode(Mode.CRYSTALS);
+        }
+        if (gappleBind == event.getKey()) {
+            if (mode == Mode.GAPPLES) {
+                setSwapToTotem(!isSwapToTotem());
+            } else setSwapToTotem(false);
+            setMode(Mode.GAPPLES);
+        }
+        if (obsidianBind == event.getKey()) {
+            if (mode == Mode.OBSIDIAN) {
+                setSwapToTotem(!isSwapToTotem());
+            } else setSwapToTotem(false);
+            setMode(Mode.OBSIDIAN);
+        }
+        if (webBind == event.getKey()) {
+            if (mode == Mode.WEBS) {
+                setSwapToTotem(!isSwapToTotem());
+            } else setSwapToTotem(false);
+            setMode(Mode.WEBS);
+        }
+    }
 
     @Subscribe
     public void onUpdate(UpdateEvent event) {
         if (mc.currentScreen instanceof GuiContainer)
             return;
+        setSuffix(getRenderSuffix());
+        if (gapSwap) {
+            if (!(getSlot(Mode.GAPPLES) == -1 && mc.player.getHeldItemOffhand().getItem() != Items.GOLDEN_APPLE) && mc.player.getHeldItemMainhand().getItem() != Items.GOLDEN_APPLE && mc.gameSettings.keyBindUseItem.isKeyDown()) {
+                setMode(Mode.GAPPLES);
+                eatingApple = true;
+                swapToTotem = false;
+            } else {
+                if (eatingApple) {
+                    setMode(oldMode);
+                    swapToTotem = oldSwapToTotem;
+                    eatingApple = false;
+                } else {
+                    oldMode = mode;
+                    oldSwapToTotem = swapToTotem;
+                }
+            }
+        }
         if (!shouldTotem()) {
-            if (!(mc.player.getHeldItemOffhand() != ItemStack.EMPTY && mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL)) {
-                final int slot = getCrystalSlot() < 9 ? getCrystalSlot() + 36 : getCrystalSlot();
-                if (getCrystalSlot() != -1) {
+            if (!(mc.player.getHeldItemOffhand() != ItemStack.EMPTY && isItemInOffhand())) {
+                final int slot = getSlot(mode) < 9 ? getSlot(mode) + 36 : getSlot(mode);
+                if (getSlot(mode) != -1) {
+                    if (oldSlot != -1) {
+                        mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(0, oldSlot, 0, ClickType.PICKUP, mc.player);
+                    }
+                    oldSlot = slot;
                     mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
                     mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, mc.player);
                     mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
                 }
             }
-        } else if (!(mc.player.getHeldItemOffhand() != ItemStack.EMPTY && mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING)) {
+        } else if (!eatingApple && !(mc.player.getHeldItemOffhand() != ItemStack.EMPTY && mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING)) {
             final int slot = getTotemSlot() < 9 ? getTotemSlot() + 36 : getTotemSlot();
             if (getTotemSlot() != -1) {
                 mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
                 mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, mc.player);
-                mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
+                mc.playerController.windowClick(0, oldSlot, 0, ClickType.PICKUP, mc.player);
+                oldSlot = -1;
             }
         }
     }
 
-    private boolean nearPlayers() {
-        return mc.world.playerEntities.stream().anyMatch(e -> e != mc.player && e.getEntityId() != -1488 && !IngrosWare.INSTANCE.getFriendManager().isFriend(e.getGameProfile().getId()) && mc.player.getDistanceToEntity(e) <= 10);
+    private boolean noNearbyPlayers() {
+        return mode == Mode.CRYSTALS && mc.world.playerEntities.stream().noneMatch(e -> e != mc.player && !IngrosWare.INSTANCE.getFriendManager().isFriend(e.getUniqueID()) && mc.player.getDistanceToEntity(e) <= targetRange);
+    }
+
+    private boolean isItemInOffhand() {
+        switch (mode) {
+            case GAPPLES:
+                return mc.player.getHeldItemOffhand().getItem() == Items.GOLDEN_APPLE;
+            case CRYSTALS:
+                return mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL;
+            case OBSIDIAN:
+                return mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() == Blocks.OBSIDIAN;
+            case WEBS:
+                return mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() == Blocks.WEB;
+        }
+        return false;
+    }
+
+    private boolean isHeldInMainHand() {
+        switch (mode) {
+            case GAPPLES:
+                return mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE;
+            case CRYSTALS:
+                return mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL;
+            case OBSIDIAN:
+                return mc.player.getHeldItemMainhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemMainhand().getItem()).getBlock() == Blocks.OBSIDIAN;
+            case WEBS:
+                return mc.player.getHeldItemMainhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemMainhand().getItem()).getBlock() == Blocks.WEB;
+        }
+        return false;
     }
 
     private boolean shouldTotem() {
+        if (isHeldInMainHand() || isSwapToTotem()) return true;
         if (holeCheck && isInHole(mc.player)) {
-            return (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= holeHealth || mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA || !nearPlayers() || mc.player.fallDistance >= 3 || (crystalCheck && !isCrystalsAABBEmpty());
+            return (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= getHoleHealth() || mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA || mc.player.fallDistance >= 3 || noNearbyPlayers() || (crystalCheck && isCrystalsAABBEmpty());
         }
-        return (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= health || mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA || !nearPlayers() || mc.player.fallDistance >= 3 || (crystalCheck && !isCrystalsAABBEmpty());
+        return (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= getHealth() || mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA || mc.player.fallDistance >= 3 || noNearbyPlayers() || (crystalCheck && isCrystalsAABBEmpty());
     }
 
-    private boolean isEmpty(BlockPos pos) {
-        return mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream().filter(e -> e instanceof EntityEnderCrystal).count() == 0;
+    private boolean isNotEmpty(BlockPos pos) {
+        return mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream().anyMatch(e -> e instanceof EntityEnderCrystal);
+    }
+
+    private float getHealth() {
+        switch (mode) {
+            case CRYSTALS:
+                return crystalHealth;
+            case GAPPLES:
+                return gappleHealth;
+            case OBSIDIAN:
+                return obsidianHealth;
+        }
+        return webHealth;
+    }
+
+    private float getHoleHealth() {
+        switch (mode) {
+            case CRYSTALS:
+                return crystalHoleHealth;
+            case GAPPLES:
+                return gappleHoleHealth;
+            case OBSIDIAN:
+                return obsidianHoleHealth;
+        }
+        return webHoleHealth;
     }
 
     private boolean isCrystalsAABBEmpty() {
-        return isEmpty(mc.player.getPosition().add(1, 0, 0)) && isEmpty(mc.player.getPosition().add(-1, 0, 0)) && isEmpty(mc.player.getPosition().add(0, 0, 1)) && isEmpty(mc.player.getPosition().add(0, 0, -1)) && isEmpty(mc.player.getPosition());
+        return isNotEmpty(mc.player.getPosition().add(1, 0, 0)) || isNotEmpty(mc.player.getPosition().add(-1, 0, 0)) || isNotEmpty(mc.player.getPosition().add(0, 0, 1)) || isNotEmpty(mc.player.getPosition().add(0, 0, -1)) || isNotEmpty(mc.player.getPosition());
+    }
+
+    int getStackSize() {
+        int size = 0;
+        if (shouldTotem()) {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING) {
+                    size += mc.player.inventory.getStackInSlot(i).getCount();
+                }
+            }
+        } else if (mode == Mode.OBSIDIAN) {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.player.inventory.getStackInSlot(i).getItem()).getBlock() == Blocks.OBSIDIAN) {
+                    size += mc.player.inventory.getStackInSlot(i).getCount();
+                }
+            }
+        } else if (mode == Mode.WEBS) {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.player.inventory.getStackInSlot(i).getItem()).getBlock() == Blocks.WEB) {
+                    size += mc.player.inventory.getStackInSlot(i).getCount();
+                }
+            }
+        } else {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() == (mode == Mode.CRYSTALS ? Items.END_CRYSTAL : Items.GOLDEN_APPLE)) {
+                    size += mc.player.inventory.getStackInSlot(i).getCount();
+                }
+            }
+        }
+        return size;
+    }
+
+    int getSlot(Mode m) {
+        int slot = -1;
+        if (m == Mode.OBSIDIAN) {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.player.inventory.getStackInSlot(i).getItem()).getBlock() == Blocks.OBSIDIAN) {
+                    slot = i;
+                    break;
+                }
+            }
+        } else if (m == Mode.WEBS) {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.player.inventory.getStackInSlot(i).getItem()).getBlock() == Blocks.WEB) {
+                    slot = i;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 45; i > 0; i--) {
+                if (mc.player.inventory.getStackInSlot(i).getItem() == (m == Mode.CRYSTALS ? Items.END_CRYSTAL : Items.GOLDEN_APPLE)) {
+                    slot = i;
+                    break;
+                }
+            }
+        }
+        return slot;
+    }
+
+    int getTotemSlot() {
+        int totemSlot = -1;
+        for (int i = 45; i > 0; i--) {
+            if (mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING) {
+                totemSlot = i;
+                break;
+            }
+        }
+        return totemSlot;
     }
 
     private boolean isInHole(Entity entity) {
@@ -132,37 +360,42 @@ public class OffhandModule extends ToggleableModule {
         return true;
     }
 
-    int getCrystalSlot() {
-        int crystalSlot = -1;
-        for (int i = 45; i > 0; i--) {
-            if (mc.player.inventory.getStackInSlot(i).getItem() == Items.END_CRYSTAL) {
-                crystalSlot = i;
-                break;
+    public String getRenderSuffix() {
+        return getModeStr() + "," + getStackSize();
+    }
+
+    private String getModeStr() {
+        if (!shouldTotem()) {
+            switch (mode) {
+                case GAPPLES:
+                    return "G";
+                case WEBS:
+                    return "W";
+                case OBSIDIAN:
+                    return "O";
+                default:
+                    return "C";
             }
         }
-        return crystalSlot;
+        return "T";
     }
 
-    int getTotemSlot() {
-        int totemSlot = -1;
-        for (int i = 45; i > 0; i--) {
-            if (mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING) {
-                totemSlot = i;
-                break;
-            }
-        }
-        return totemSlot;
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
-    @Override
-    public void onState() {
-        if (toggletotem && IngrosWare.INSTANCE.getModuleManager().getModule("AutoTotem").isEnabled())
-            ((AutoTotemModule) IngrosWare.INSTANCE.getModuleManager().getModule("AutoTotem")).toggle();
+    public boolean isSwapToTotem() {
+        return swapToTotem;
     }
 
-    @Override
-    public void onDisable() {
-        if (toggletotem && !IngrosWare.INSTANCE.getModuleManager().getModule("AutoTotem").isEnabled())
-            ((AutoTotemModule) IngrosWare.INSTANCE.getModuleManager().getModule("AutoTotem")).toggle();
+    public void setSwapToTotem(boolean swapToTotem) {
+        this.swapToTotem = swapToTotem;
+    }
+
+    public enum Mode {
+        CRYSTALS,
+        GAPPLES,
+        OBSIDIAN,
+        WEBS
     }
 }

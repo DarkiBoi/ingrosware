@@ -26,7 +26,7 @@ public class GuiHudEditor extends GuiScreen {
     public void drawScreen(int mx, int my, float p_drawScreen_3_) {
         super.drawScreen(mx, my, p_drawScreen_3_);
         final ScaledResolution scaledResolution = new ScaledResolution(mc);
-            IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
+        IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
             if (hudComponent.isDragging()) {
                 hudComponent.setX(mx + hudComponent.getLastX());
                 hudComponent.setY(my + hudComponent.getLastY());
@@ -65,13 +65,9 @@ public class GuiHudEditor extends GuiScreen {
             switch (p_mouseClicked_3_) {
                 case 0:
                     if (hovered) {
-                        if (hudComponent instanceof CustomComponent && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-                            IngrosWare.INSTANCE.getComponentManager().remove(hudComponent.getLabel());
-                        } else {
-                            hudComponent.setDragging(true);
-                            hudComponent.setLastX(hudComponent.getX() - mx);
-                            hudComponent.setLastY(hudComponent.getY() - my);
-                        }
+                        hudComponent.setDragging(true);
+                        hudComponent.setLastX(hudComponent.getX() - mx);
+                        hudComponent.setLastY(hudComponent.getY() - my);
                     }
                     break;
                 case 1:
