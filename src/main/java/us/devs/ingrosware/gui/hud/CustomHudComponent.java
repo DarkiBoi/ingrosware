@@ -56,7 +56,6 @@ public class CustomHudComponent extends GuiScreen {
             drawString(mc.fontRenderer, "I hate zim", width / 2 - 96,
                     66, 0xFF888888);
         }
-
         text.drawTextBox();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -66,11 +65,11 @@ public class CustomHudComponent extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                    if(!text.getText().isEmpty()) {
-                        final CustomComponent customComponent = new CustomComponent(text.getText());
-                        IngrosWare.INSTANCE.getComponentManager().register(customComponent);
-                        mc.displayGuiScreen(new GuiHudEditor());
-                    }
+                if(!text.getText().isEmpty()) {
+                    final CustomComponent customComponent = new CustomComponent(text.getText());
+                    IngrosWare.INSTANCE.getComponentManager().register(customComponent);
+                    mc.displayGuiScreen(new GuiHudEditor());
+                }
                 break;
             case 1:
                 mc.displayGuiScreen(new GuiHudEditor());
