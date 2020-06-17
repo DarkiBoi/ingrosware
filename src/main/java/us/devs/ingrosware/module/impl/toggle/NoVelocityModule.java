@@ -20,37 +20,10 @@ import us.devs.ingrosware.setting.annotation.Setting;
  **/
 @Toggleable(label = "NoVelocity", category = ModuleCategory.COMBAT,color = 0x717171,bind = Keyboard.KEY_NONE)
 public class NoVelocityModule extends ToggleableModule {
-    private boolean once;
-
-    @Setting("AAC")
-    public boolean aac;
-
-    @Subscribe
-    public void onUpdate(UpdateEvent event) {
-        if (mc.world == null || mc.player == null || !aac) return;
-        if (event.getType() == EventType.PRE) {
-            if (mc.player.hurtTime == 9 & once & mc.player.onGround) {
-                once = false;
-            }
-            if (mc.player.hurtTime > 0 & mc.player.hurtTime <= 7) {
-                mc.player.motionX *= 0.5;
-                mc.player.motionZ *= 0.5;
-            }
-            if (mc.player.hurtTime == 5) {
-                mc.player.motionX = 0.0;
-                mc.player.motionZ = 0.0;
-                once = true;
-            }
-            if (mc.player.hurtTime == 4) {
-                final double playerYaw = Math.toRadians(mc.player.rotationYaw);
-                mc.player.setPosition(mc.player.posX - (Math.sin(playerYaw) * 0.05), mc.player.posY, mc.player.posZ);
-            }
-        }
-    }
 
     @Subscribe
     public void onPacket(PacketEvent event) {
-        if (mc.player == null || aac) return;
+        if (mc.player == null) return;
         if (event.getType() == EventType.POST) {
             if ((event.getPacket() instanceof SPacketEntityVelocity) && (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId())) {
                 event.setCancelled(true);
@@ -59,10 +32,5 @@ public class NoVelocityModule extends ToggleableModule {
                 event.setCancelled(true);
             }
         }
-    }
-
-    @Override
-    public void onState() {
-        once = false;
     }
 }

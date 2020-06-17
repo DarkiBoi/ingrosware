@@ -116,9 +116,9 @@ public class NametagsModule extends ToggleableModule {
                     final NetworkPlayerInfo networkPlayerInfo = mc.getConnection().getPlayerInfo(ent.getUniqueID());
                     final String p = Objects.isNull(networkPlayerInfo) ? " 0ms" : " " + networkPlayerInfo.getResponseTime() + "ms";
                     final ChatFormatting healthColor = (Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 1.45f ? ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ? ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
-                    final String str = (ping ? ChatFormatting.BLUE + p : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
-                    RenderUtil.drawRect((x + (w / 2) - (mc.fontRenderer.getStringWidth( ent.getName() + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT, mc.fontRenderer.getStringWidth( ent.getName() + str) + 3, mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
-                    mc.fontRenderer.drawStringWithShadow( ent.getName() + str, (x + (w / 2) - (mc.fontRenderer.getStringWidth(ent.getName() + str) >> 1)), y - 3 - mc.fontRenderer.FONT_HEIGHT, clr.getRGB());
+                    final String str = healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
+                    RenderUtil.drawRect((x + (w / 2) - (mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") +ent.getName() + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT, mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + ent.getName() + str) + 3, mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
+                    mc.fontRenderer.drawStringWithShadow( (ping ? ChatFormatting.BLUE + p + " " : "") +ent.getName() + str, (x + (w / 2) - (mc.fontRenderer.getStringWidth((ping ? ChatFormatting.BLUE + p + " " : "") +ent.getName() + str) >> 1)), y - 3 - mc.fontRenderer.FONT_HEIGHT, clr.getRGB());
                     if (armor && ent instanceof EntityPlayer)
                         drawArmor((EntityPlayer) ent, (int) (x + w / 2), (int) (y - 1 - (mc.fontRenderer.FONT_HEIGHT * 3.15)));
                     GlStateManager.scale(1.0f, 1.0f, 1.0f);

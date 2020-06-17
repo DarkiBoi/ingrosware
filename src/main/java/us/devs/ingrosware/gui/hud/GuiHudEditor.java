@@ -2,13 +2,17 @@ package us.devs.ingrosware.gui.hud;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import org.lwjgl.input.Keyboard;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.hud.settings.HudSettings;
+import us.devs.ingrosware.hud.Component;
+import us.devs.ingrosware.hud.type.CustomComponent;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * made for Ingros
@@ -17,13 +21,12 @@ import java.io.IOException;
  * @since 6/13/2020
  **/
 public class GuiHudEditor extends GuiScreen {
-    private ScaledResolution scaledResolution = null;
 
     @Override
     public void drawScreen(int mx, int my, float p_drawScreen_3_) {
         super.drawScreen(mx, my, p_drawScreen_3_);
-        if (scaledResolution == null) scaledResolution = new ScaledResolution(mc);
-        IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
+        final ScaledResolution scaledResolution = new ScaledResolution(mc);
+            IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
             if (hudComponent.isDragging()) {
                 hudComponent.setX(mx + hudComponent.getLastX());
                 hudComponent.setY(my + hudComponent.getLastY());
@@ -31,23 +34,21 @@ public class GuiHudEditor extends GuiScreen {
             if (hudComponent.getX() < 0) {
                 hudComponent.setX(0);
             }
-            if (hudComponent.getX() + hudComponent.getWidth() > new ScaledResolution(mc).getScaledWidth()) {
-                hudComponent.setX(new ScaledResolution(mc).getScaledWidth() - hudComponent.getWidth());
+            if (hudComponent.getX() + hudComponent.getWidth() > scaledResolution.getScaledWidth()) {
+                hudComponent.setX(scaledResolution.getScaledWidth() - hudComponent.getWidth());
             }
             if (hudComponent.getY() < 0) {
                 hudComponent.setY(0);
             }
-            if (hudComponent.getY() + hudComponent.getHeight() > new ScaledResolution(mc).getScaledHeight()) {
-                hudComponent.setY(new ScaledResolution(mc).getScaledHeight() - hudComponent.getHeight());
+            if (hudComponent.getY() + hudComponent.getHeight() > scaledResolution.getScaledHeight()) {
+                hudComponent.setY(scaledResolution.getScaledHeight() - hudComponent.getHeight());
             }
-//            RenderUtil.drawRect(0, scaledResolution.getScaledHeight() / 2 - 0.5f, scaledResolution.getScaledWidth(), 1, 0xff000000);
-//            RenderUtil.drawRect(scaledResolution.getScaledWidth() / 2 - 0.5f, 0, 1, scaledResolution.getScaledHeight(), 0xff000000);
-
-            if (!hudComponent.isHidden()) hudComponent.onDraw(new ScaledResolution(mc));
+            if (!hudComponent.isHidden()) hudComponent.onDraw(scaledResolution);
 
             RenderUtil.drawRect(hudComponent.getX(), hudComponent.getY(), hudComponent.getWidth(), hudComponent.getHeight(), hudComponent.isDragging() ? 0x95000000 : 0x80000000);
 
-            if(!hudComponent.isLabelHidden()) fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 - mc.fontRenderer.getStringWidth(hudComponent.getLabel()) / 2, hudComponent.getY() + hudComponent.getHeight() / 2 - mc.fontRenderer.FONT_HEIGHT / 2, new Color(255, 255, 255, 83).getRGB());
+            if (!hudComponent.isLabelHidden())
+                fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 - (mc.fontRenderer.getStringWidth(hudComponent.getLabel()) >> 1), hudComponent.getY() + hudComponent.getHeight() / 2 - (mc.fontRenderer.FONT_HEIGHT >> 1), new Color(255, 255, 255, 83).getRGB());
         });
     }
 
@@ -64,19 +65,23 @@ public class GuiHudEditor extends GuiScreen {
             switch (p_mouseClicked_3_) {
                 case 0:
                     if (hovered) {
-                        hudComponent.setDragging(true);
-                        hudComponent.setLastX(hudComponent.getX() - mx);
-                        hudComponent.setLastY(hudComponent.getY() - my);
+                        if (hudComponent instanceof CustomComponent && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+                            IngrosWare.INSTANCE.getComponentManager().remove(hudComponent.getLabel());
+                        } else {
+                            hudComponent.setDragging(true);
+                            hudComponent.setLastX(hudComponent.getX() - mx);
+                            hudComponent.setLastY(hudComponent.getY() - my);
+                        }
                     }
                     break;
                 case 1:
-                    if(hovered) {
+                    if (hovered) {
                         mc.displayGuiScreen(new HudSettings(hudComponent));
                     } else {
                         mc.displayGuiScreen(new CustomHudComponent());
                     }
                     break;
-                case 3:
+                case 2:
                     if (hovered)
                         hudComponent.setHidden(!hudComponent.isHidden());
                     break;
@@ -90,10 +95,8 @@ public class GuiHudEditor extends GuiScreen {
     protected void mouseReleased(int mx, int my, int p_mouseReleased_3_) {
         super.mouseReleased(mx, my, p_mouseReleased_3_);
         IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
-            if (p_mouseReleased_3_ == 0) {
-                if (hudComponent.isDragging())
-                    hudComponent.setDragging(false);
-            }
+            if (p_mouseReleased_3_ == 0 && hudComponent.isDragging())
+                hudComponent.setDragging(false);
         });
     }
 
