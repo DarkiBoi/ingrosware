@@ -21,11 +21,11 @@ import java.util.Map;
  *
  * legit gui language reworked lol.
  **/
-public class FontSelectorGUI extends GuiScreen {
+public class GuiFontSelector extends GuiScreen {
     protected GuiScreen parentScreen;
-    private FontSelectorGUI.List list;
+    private GuiFontSelector.List list;
 
-    public FontSelectorGUI(GuiScreen screen) {
+    public GuiFontSelector(GuiScreen screen) {
         this.parentScreen = screen;
     }
 
@@ -33,7 +33,7 @@ public class FontSelectorGUI extends GuiScreen {
     public void initGui() {
         this.buttonList.add(new GuiOptionButton(5,
                 this.width / 2 - 70, this.height - 38, "Done"));
-        this.list = new FontSelectorGUI.List(this.mc);
+        this.list = new GuiFontSelector.List(this.mc);
         this.list.registerScrollButtons(7, 8);
     }
 
@@ -67,8 +67,8 @@ public class FontSelectorGUI extends GuiScreen {
         private final Map<String, MCFontRenderer> fontMap = Maps.newHashMap();
 
         public List(Minecraft mcIn) {
-            super(mcIn, FontSelectorGUI.this.width, FontSelectorGUI.this.height, 32,
-                    FontSelectorGUI.this.height - 65 + 4, 18);
+            super(mcIn, GuiFontSelector.this.width, GuiFontSelector.this.height, 32,
+                    GuiFontSelector.this.height - 65 + 4, 18);
 
             for (MCFontRenderer font : IngrosWare.INSTANCE.getFontManager().getList()) {
                 this.fontMap.put(font.getLabel(), font);
@@ -94,13 +94,13 @@ public class FontSelectorGUI extends GuiScreen {
         }
 
         protected void drawBackground() {
-            FontSelectorGUI.this.drawDefaultBackground();
+            GuiFontSelector.this.drawDefaultBackground();
         }
 
         @Override
         protected void drawSlot(int i, int i1, int i2, int i3, int i4, int i5, float v) {
-            FontSelectorGUI.this.
-                    drawCenteredString(FontSelectorGUI.this.fontRenderer,
+            GuiFontSelector.this.
+                    drawCenteredString(GuiFontSelector.this.fontRenderer,
                             (this.fontMap.get(this.codeList.get(i))).getLabel(),
                             this.width / 2, i2 + 1, 16777215);
         }

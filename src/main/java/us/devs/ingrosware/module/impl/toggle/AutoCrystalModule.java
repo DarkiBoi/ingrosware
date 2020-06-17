@@ -63,9 +63,6 @@ public class AutoCrystalModule extends ToggleableModule {
     @Setting("T-Sort-Mode")
     @Mode({"FOV", "HEALTH", "DISTANCE"})
     public String targetSortMode = "DISTANCE";
-    @Setting("C-Sort-Mode")
-    @Mode({"DAMAGE", "DISTANCE"})
-    public String crystalSortMode = "DAMAGE";
     @Clamp(minimum = "0.1", maximum = "7.0")
     @Setting("Crystal-Range")
     public float crystalRange = 6.0f;
@@ -97,11 +94,11 @@ public class AutoCrystalModule extends ToggleableModule {
     @Setting("Anti-Surround")
     public boolean antiSurround = true;
     @Setting("Mine-Stop")
-    public boolean mineStop = false;
+    public boolean mineStop = true;
     @Setting("Food-Stop")
-    public boolean foodStop = false;
+    public boolean foodStop = true;
     @Setting("Crystal-Switch")
-    public boolean crystalSwitch = false;
+    public boolean crystalSwitch = true;
     @Setting("Raytrace")
     public boolean rayTrace = false;
     @Setting("Rotate")
@@ -249,7 +246,7 @@ public class AutoCrystalModule extends ToggleableModule {
         Entity bestEntity = null;
         for (final Entity e : mc.world.loadedEntityList) {
             if (e instanceof EntityEnderCrystal) {
-                final double val = getSortingWeightCrystal((EntityEnderCrystal) e);
+                final double val = target.getDistanceSqToEntity(e);
                 if (!isValidCrystal(e) || val >= minVal) continue;
                 final float targetDamage = calculateDamage(e, target);
                 final float selfDamage = calculateDamage(e, mc.player);
@@ -301,11 +298,6 @@ public class AutoCrystalModule extends ToggleableModule {
                 return mc.player.getDistanceSqToEntity(e);
         }
     }
-
-    private double getSortingWeightCrystal(final EntityEnderCrystal e) {
-        return crystalSortMode.equalsIgnoreCase("DISTANCE") ? target.getDistanceSqToEntity(e) : -calculateDamage(e, target);
-    }
-
     private double yawDist(final Entity e) {
         if (e != null) {
             final Vec3d difference = e.getPositionVector().addVector(0.0, e.getEyeHeight() / 2.0f, 0.0).subtract(mc.player.getPositionVector().addVector(0.0, mc.player.getEyeHeight(), 0.0));
