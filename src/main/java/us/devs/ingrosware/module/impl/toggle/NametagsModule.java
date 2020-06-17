@@ -118,12 +118,16 @@ public class NametagsModule extends ToggleableModule {
                     final float y = transformed.y * 2;
                     final NetworkPlayerInfo networkPlayerInfo = mc.getConnection().getPlayerInfo(ent.getUniqueID());
                     final String p = String.format("%sms", Objects.isNull(networkPlayerInfo) ? "0" : networkPlayerInfo.getResponseTime());
-                    final ChatFormatting healthColor = (Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 1.45f ? ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ? ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
+                    final ChatFormatting healthColor = (Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 1.45f ?
+                            ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ?
+                            ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
                     final String str = healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
-                    final String entName = IngrosWare.INSTANCE.getFriendManager().get(ent.getUniqueID()).map(Friend::getName).orElse(ent.getName());
+                    final String entName = String.format("[%s] %s", IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()) != null ?
+                            IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()).getLabel() : "",
+                            IngrosWare.INSTANCE.getFriendManager().get(ent.getUniqueID()).map(Friend::getName).orElse(ent.getName()));
                     RenderUtil.drawRect((x + (w / 2) -
                             (mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
-                            mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + ent.getName() + str) + 3,
+                            mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) + 3,
                             mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
                     mc.fontRenderer.drawStringWithShadow( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str, (x + (w / 2) -
                             (mc.fontRenderer.getStringWidth((ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) >> 1)),
@@ -210,7 +214,9 @@ public class NametagsModule extends ToggleableModule {
     }
 
     private Color getEntityColor(Entity entity) {
-        return new Color(entity instanceof EntityPlayer && IngrosWare.INSTANCE.getFriendManager().isFriend(entity.getUniqueID())
-                ? 0xff2020ff : (entity.isSneaking() ? 0xffffff00 : playerColor.getRGB()));
+        return new Color(entity instanceof EntityPlayer && IngrosWare.INSTANCE.getFriendManager().get(entity.getUniqueID()).isPresent()
+                ? 0xff2020ff : (entity.isSneaking() ? 0xffffff00 :
+                IngrosWare.INSTANCE.getProfileManager().getRank(entity.getUniqueID()) != null ?
+                        IngrosWare.INSTANCE.getProfileManager().getRank(entity.getUniqueID()).getColor().getRGB() : playerColor.getRGB()));
     }
 }

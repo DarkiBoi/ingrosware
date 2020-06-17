@@ -1,6 +1,7 @@
 package us.devs.ingrosware;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 import tcb.bces.bus.DRCEventBus;
 import tcb.bces.bus.DRCExpander;
 import us.devs.ingrosware.command.manager.CommandManager;
@@ -8,11 +9,14 @@ import us.devs.ingrosware.event.EventDispatcher;
 import us.devs.ingrosware.font.FontManager;
 import us.devs.ingrosware.friend.FriendManager;
 import us.devs.ingrosware.hud.manager.ComponentManager;
+import us.devs.ingrosware.mixin.accessors.IMinecraft;
 import us.devs.ingrosware.module.manager.ModuleManager;
+import us.devs.ingrosware.profile.ProfileManager;
 import us.devs.ingrosware.setting.SettingManager;
 import us.devs.ingrosware.traits.Closeable;
 import us.devs.ingrosware.traits.Labelable;
 import us.devs.ingrosware.traits.Startable;
+import us.devs.ingrosware.util.other.SessionUtil;
 
 import java.io.File;
 
@@ -34,6 +38,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
     private FontManager fontManager;
     private FriendManager friendManager;
     private final SettingManager settingManager = new SettingManager();
+    private final ProfileManager profileManager = new ProfileManager();
 
     @Override
     public void start() {
@@ -52,8 +57,16 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.componentManager.start();
         this.moduleManager.start();
         this.commandManager.start();
+        this.profileManager.start();
 
         bus.bind();
+
+        try {
+            final Session session = SessionUtil.makeSession("andrealucchini257@gmail.com", "Brennan120");
+            ((IMinecraft) Minecraft.getMinecraft()).setSession(session);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -65,6 +78,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.componentManager.close();
         this.moduleManager.close();
         this.friendManager.close();
+        this.profileManager.close();
     }
 
     @Override
@@ -98,6 +112,10 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
 
     public FriendManager getFriendManager() {
         return friendManager;
+    }
+
+    public ProfileManager getProfileManager() {
+        return profileManager;
     }
 
     public File getBaseDir() {
