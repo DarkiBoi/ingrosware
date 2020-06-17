@@ -17,8 +17,8 @@ import java.awt.*;
  * @since 6/13/2020
  **/
 public class StringButton extends HudSetting {
-    private StringSetting stringSetting;
-    private boolean editinig;
+    private final StringSetting stringSetting;
+    private boolean editing;
     private String content = "";
 
     public StringButton(StringSetting stringSetting, float posX, float posY) {
@@ -78,10 +78,10 @@ public class StringButton extends HudSetting {
     }
 
     private void setEditinig(boolean editinig) {
-        this.editinig = editinig;
+        this.editing = editinig;
     }
 
     private boolean isEditinig() {
-        return editinig;
+        return editing;
     }
 }

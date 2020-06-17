@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import us.devs.ingrosware.hud.Component;
 import us.devs.ingrosware.manager.impl.AbstractMapManager;
+import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.util.ClassUtil;
 
 import java.io.*;
@@ -128,4 +129,7 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         });
     }
 
+    public Component getComponent(String name) {
+        return getRegistry().get(name);
+    }
 }

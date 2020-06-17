@@ -18,7 +18,7 @@ import java.awt.*;
  * @since 6/13/2020
  **/
 public class NumberButton extends HudSetting {
-    private NumberSetting numberSetting;
+    private final NumberSetting numberSetting;
     private boolean dragging;
 
     public NumberButton(NumberSetting numberSetting, float posX, float posY) {

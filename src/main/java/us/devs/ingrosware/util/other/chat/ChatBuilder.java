@@ -6,6 +6,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import us.devs.ingrosware.IngrosWare;
 
 import java.util.regex.Pattern;
 

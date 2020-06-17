@@ -3,6 +3,7 @@ package us.devs.ingrosware.util.other;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
+import us.devs.ingrosware.util.other.chat.ChatColor;
 
 /**
  * made for Ingros
@@ -17,7 +18,6 @@ public class Logger {
     }
 
     public static void printMessage(String message) {
-        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(ChatFormatting.RED + "<" + ChatFormatting.GRAY + "IngrosWare" + ChatFormatting.RED + "> " + ChatFormatting.GRAY +  message));
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(ChatFormatting.GRAY + "Ingros" + ChatFormatting.DARK_GRAY + " | " + ChatFormatting.WHITE + message));
     }
-
 }

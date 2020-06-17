@@ -2,6 +2,7 @@ package us.devs.ingrosware.setting;
 
 import com.esotericsoftware.reflectasm.FieldAccess;
 import us.devs.ingrosware.manager.impl.AbstractMapManager;
+import us.devs.ingrosware.setting.annotation.Bind;
 import us.devs.ingrosware.setting.annotation.Clamp;
 import us.devs.ingrosware.setting.annotation.Mode;
 import us.devs.ingrosware.setting.annotation.Setting;
@@ -51,7 +52,12 @@ public class SettingManager extends AbstractMapManager<Object, List<AbstractSett
                     if (val instanceof Color) {
                         register(object, new ColorSetting(setting.value(), object, field));
                     }
-
+                    if (field.isAnnotationPresent(Bind.class)) {
+                        Bind bind = field.getAnnotation(Bind.class);
+                        if (val instanceof Integer) {
+                            register(object, new BindSetting(setting.value(), object, field, bind.pressed()));
+                        }
+                    }
                     if (field.isAnnotationPresent(Clamp.class)) {
                         Clamp clamp = field.getAnnotation(Clamp.class);
 

@@ -19,8 +19,8 @@ import java.awt.*;
  * @since 6/15/2020
  **/
 public class ColorButton extends HudSetting {
-    private ColorSetting colorSetting;
-    private boolean pressedhue;
+    private final ColorSetting colorSetting;
+    private boolean pressedHue;
     private float pos, hue, saturation, brightness;
     private boolean hovered;
 
@@ -33,7 +33,7 @@ public class ColorButton extends HudSetting {
         this.hue = hsb[0];
         this.saturation = hsb[1];
         this.brightness = hsb[2];
-        pos = 0;
+        this.pos = 0;
     }
 
     @Override
@@ -42,11 +42,11 @@ public class ColorButton extends HudSetting {
         Keyboard.enableRepeatEvents(true);
         hovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY() + 12, 100,12);
         for (float i = 0; i + 1 < 100; i += 0.5f) {
-            float posx = getPosX() + i;
+            float x = getPosX() + i;
             int color = Color.getHSBColor(i / 100, saturation, brightness).getRGB();
-            RenderUtil.drawRect(posx, getPosY() + 12, 1, 12, color);
-            if (mouseX == posx) {
-                if (pressedhue) {
+            RenderUtil.drawRect(x, getPosY() + 12, 1, 12, color);
+            if (mouseX == x) {
+                if (pressedHue) {
                     colorSetting.setValue(color);
                     hue = i / 100;
                 }
@@ -89,7 +89,7 @@ public class ColorButton extends HudSetting {
         final boolean hovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY() + 12, 100,12);
         if (mouseButton == 0) {
             if (hovered) {
-                pressedhue = true;
+                pressedHue = true;
             }
         }
     }
@@ -98,13 +98,9 @@ public class ColorButton extends HudSetting {
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         super.mouseReleased(mouseX, mouseY, mouseButton);
         if (mouseButton == 0) {
-            if (pressedhue) {
-                pressedhue = false;
+            if (pressedHue) {
+                pressedHue = false;
             }
         }
-    }
-
-    public ColorSetting getColorSetting() {
-        return colorSetting;
     }
 }

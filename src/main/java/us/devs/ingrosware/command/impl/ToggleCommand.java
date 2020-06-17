@@ -12,7 +12,7 @@ public class ToggleCommand extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length < 2) {
-            clientChatMsg().appendText("To little arguments!").send();
+            clientChatMsg().appendText("Too little arguments!").send();
             return;
         }
         final ToggleableModule module = IngrosWare.INSTANCE.getModuleManager().getToggleByName(args[1]);

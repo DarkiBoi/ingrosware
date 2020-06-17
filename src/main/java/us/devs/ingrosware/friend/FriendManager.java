@@ -77,4 +77,5 @@ public class FriendManager extends AbstractListManager<Friend> implements Starta
     public boolean isFriend(final UUID uuid) {
         return this.getList().stream().anyMatch(friend -> friend.getUUID().equals(uuid));
     }
+
 }

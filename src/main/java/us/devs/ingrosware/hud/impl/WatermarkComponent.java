@@ -23,6 +23,6 @@ public class WatermarkComponent extends Component {
         super.onDraw(scaledResolution);
         if (mc.world == null || mc.player == null)
             return;
-        mc.fontRenderer.drawStringWithShadow(IngrosWare.INSTANCE.getLabel(), getX(), getY(), color.getRGB());
+        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(IngrosWare.INSTANCE.getLabel(), getX(), getY(), color.getRGB());
     }
 }

@@ -9,7 +9,7 @@ import us.devs.ingrosware.event.impl.network.PacketEvent;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Persistent;
 import us.devs.ingrosware.module.types.PersistentModule;
-import us.devs.ingrosware.util.other.Logger;
+import us.devs.ingrosware.util.other.chat.ChatBuilder;
 
 /**
  * made for Ingros
@@ -22,7 +22,7 @@ public class CommandsModule extends PersistentModule {
 
     @Subscribe
     public void onSendPacket(PacketEvent event) {
-        if(event.getType() == EventType.PRE) {
+        if (event.getType() == EventType.PRE) {
             if (event.getPacket() instanceof CPacketChatMessage) {
                 checkCommands(((CPacketChatMessage) event.getPacket()).getMessage(), event);
             }
@@ -47,7 +47,7 @@ public class CommandsModule extends PersistentModule {
                 }
             }
             if (!event.isCancelled()) {
-                Logger.printMessage("Command \"" + message + "\" was not found!");
+                new ChatBuilder().appendText("Command \"").appendText(message).appendText("\" was not found!").send();
                 event.setCancelled(true);
             }
             event.setCancelled(true);

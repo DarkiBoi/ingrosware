@@ -5,7 +5,6 @@ import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.command.Command;
 import us.devs.ingrosware.command.annotation.CommandManifest;
 import us.devs.ingrosware.module.types.ToggleableModule;
-import us.devs.ingrosware.util.other.Logger;
 import us.devs.ingrosware.util.other.chat.ChatColor;
 
 @CommandManifest(label = "Keybind", description = "set a module keybind!", handles = {"bind","key"})

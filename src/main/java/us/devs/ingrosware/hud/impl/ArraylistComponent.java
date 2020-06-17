@@ -30,11 +30,11 @@ public class ArraylistComponent extends Component {
             return;
         final ArrayList<ToggleableModule> sorted = new ArrayList<>(IngrosWare.INSTANCE.getModuleManager().getToggles());
         float y = getY();
-        sorted.sort(Comparator.comparingDouble(m -> -mc.fontRenderer.getStringWidth(m.getLabel())));
+        sorted.sort(Comparator.comparingDouble(m -> -IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(m.getLabel())));
         for (ToggleableModule module : sorted) {
             if (module.getState() && !module.isHidden()) {
-                mc.fontRenderer.drawStringWithShadow(module.getLabel(), getX() + ((getX() + getWidth() / 2) > (scaledResolution.getScaledWidth() >> 1) ? (getWidth() - mc.fontRenderer.getStringWidth(module.getLabel())) : 0), y + ((getY() + getHeight() / 2) > (scaledResolution.getScaledHeight() >> 1) ? getHeight() - mc.fontRenderer.FONT_HEIGHT : 0), rainbow ? getRainbow(6000, (int) (y * 30), 0.85f):module.getColor().getRGB());
-                y += ((getY() + getHeight() / 2) > scaledResolution.getScaledHeight() >> 1) ? -mc.fontRenderer.FONT_HEIGHT : mc.fontRenderer.FONT_HEIGHT;
+                IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(module.getLabel(), getX() + ((getX() + getWidth() / 2) > (scaledResolution.getScaledWidth() >> 1) ? (getWidth() - IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(module.getLabel())) : 0), y + ((getY() + getHeight() / 2) > (scaledResolution.getScaledHeight() >> 1) ? getHeight() - IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight() : 0), rainbow ? getRainbow(6000, (int) (y * 30), 0.85f):module.getColor().getRGB());
+                y += ((getY() + getHeight() / 2) > scaledResolution.getScaledHeight() >> 1) ? -IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight() : IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight();
             }
         }
     }

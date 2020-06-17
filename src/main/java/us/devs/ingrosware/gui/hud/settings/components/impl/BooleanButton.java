@@ -15,7 +15,7 @@ import java.awt.*;
  * @since 6/13/2020
  **/
 public class BooleanButton extends HudSetting {
-    private BooleanSetting booleanSetting;
+    private final BooleanSetting booleanSetting;
 
     public BooleanButton(BooleanSetting booleanSetting, float posX, float posY) {
         super(booleanSetting.getLabel(), posX, posY);
