@@ -65,7 +65,8 @@ public class MainFrame extends Frame {
         RenderUtil.drawBorderedRect(getPosX() + 1.0f,getPosY() + 1.0f,getWidth() - 2.0f,getHeight() - 2.0f,0.5f,0xff191919,0xff000000);
         RenderUtil.drawBorderedRect(getPosX() + 1.0f,getPosY() + 1.0f,getWidth() - 2.0f,14,0.5f,0xff070707,0xff000000);
         RenderUtil.drawBorderedRect(getPosX() + 4.0f,getPosY() + 18,getWidth() - 8.0f,18,0.5f,0xff252525,0xff000000);
-        RenderUtil.drawBorderedRect(getPosX() + 6.0f,getPosY() + 40,100,getHeight() - 40,0.5f,0xff252525,0xff000000);
+        RenderUtil.drawBorderedRect(getPosX() + 6.0f,getPosY() + 40,100,getHeight() - 46,0.5f,0xff252525,0xff000000);
+        if (isExtended()) RenderUtil.drawBorderedRect(getPosX() + 110,getPosY() + 40,284,getHeight() - 46,0.5f,0xff252525,0xff000000);
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(),getPosX() + 4,getPosY() + 4,-1);
         for (Component component : getComponents()) {
             if (component instanceof CategoryComponent) {
@@ -134,6 +135,15 @@ public class MainFrame extends Frame {
                 component.onGuiClosed();
             }
         }
+    }
+
+    private boolean isExtended() {
+        for (Component component : getComponents()) {
+            if (component instanceof ModuleComponent && ((ModuleComponent)component).isExtended() && ((ModuleComponent)component).getModule().getCategory() == getSelectedCatergory()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<Component> getComponents() {

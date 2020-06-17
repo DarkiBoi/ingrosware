@@ -121,16 +121,16 @@ public class NametagsModule extends ToggleableModule {
                     final ChatFormatting healthColor = (Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 1.45f ?
                             ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ?
                             ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
-                    final String str = healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
+                    final String str = (ping ? ChatFormatting.BLUE + p + " " : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
                     final String entName = String.format("[%s] %s", IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()) != null ?
                             IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()).getLabel() : "",
                             IngrosWare.INSTANCE.getFriendManager().get(ent.getUniqueID()).map(Friend::getName).orElse(ent.getName()));
                     RenderUtil.drawRect((x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
-                            mc.fontRenderer.getStringWidth( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) + 3,
+                            (mc.fontRenderer.getStringWidth( entName + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
+                            mc.fontRenderer.getStringWidth( entName + str) + 3,
                             mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
-                    mc.fontRenderer.drawStringWithShadow( (ping ? ChatFormatting.BLUE + p + " " : "") + entName + str, (x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth((ping ? ChatFormatting.BLUE + p + " " : "") + entName + str) >> 1)),
+                    mc.fontRenderer.drawStringWithShadow( entName + str, (x + (w / 2) -
+                            (mc.fontRenderer.getStringWidth(entName + str) >> 1)),
                             y - 3 - mc.fontRenderer.FONT_HEIGHT, clr.getRGB());
                     if (armor && ent instanceof EntityPlayer)
                         drawArmor((EntityPlayer) ent, (int) (x + w / 2), (int) (y - 1 - (mc.fontRenderer.FONT_HEIGHT * 3.15)));

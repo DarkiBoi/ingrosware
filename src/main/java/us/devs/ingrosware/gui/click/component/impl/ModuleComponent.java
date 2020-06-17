@@ -52,6 +52,7 @@ public class ModuleComponent extends Component {
                     for (Component component : getMainFrame().getComponents()) {
                         if (component instanceof ModuleComponent && component != this) {
                             final ModuleComponent moduleComponent = (ModuleComponent) component;
+                            if (moduleComponent.getModule().getCategory() == getModule().getCategory())
                             moduleComponent.setExtended(false);
                         }
                     }
