@@ -69,10 +69,11 @@ public class CustomHudComponent extends GuiScreen {
                     if(!text.getText().isEmpty()) {
                         final CustomComponent customComponent = new CustomComponent(text.getText());
                         IngrosWare.INSTANCE.getComponentManager().register(customComponent);
+                        mc.displayGuiScreen(new GuiHudEditor());
                     }
                 break;
             case 1:
-                mc.displayGuiScreen(null);
+                mc.displayGuiScreen(new GuiHudEditor());
                 break;
         }
     }

@@ -47,6 +47,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.moduleManager = new ModuleManager(new File(baseDir, "modules"));
         this.commandManager = new CommandManager(new File(baseDir, "commands"));
         this.friendManager = new FriendManager(baseDir);
+        this.friendManager.start();
         this.fontManager.start();
         this.componentManager.start();
         this.moduleManager.start();
@@ -59,6 +60,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
     public void close() {
         if(!baseDir.exists())
             baseDir.mkdirs();
+        this.friendManager.close();
         this.fontManager.close();
         this.componentManager.close();
         this.moduleManager.close();

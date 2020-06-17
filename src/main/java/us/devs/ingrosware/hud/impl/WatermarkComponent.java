@@ -18,6 +18,8 @@ import java.awt.*;
 public class WatermarkComponent extends Component {
     @Setting("Color")
     public Color color = new Color(255,255,255);
+
+
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
         super.onDraw(scaledResolution);
