@@ -2,6 +2,9 @@ package us.devs.ingrosware.hud.type;
 
 import net.minecraft.client.gui.ScaledResolution;
 import us.devs.ingrosware.hud.Component;
+import us.devs.ingrosware.setting.annotation.Setting;
+
+import java.awt.*;
 
 /**
  * made for Ingros
@@ -11,6 +14,10 @@ import us.devs.ingrosware.hud.Component;
  **/
 public class CustomComponent extends Component {
     private final String text;
+
+    @Setting("Color")
+    public Color color = new Color(0xFFFFFF);
+
     public CustomComponent(String text) {
         this.text = text;
         setLabel(text);
@@ -24,6 +31,6 @@ public class CustomComponent extends Component {
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
         super.onDraw(scaledResolution);
-        mc.fontRenderer.drawStringWithShadow(text, getX(), getY(), -1);
+        mc.fontRenderer.drawStringWithShadow(text, getX(), getY(), color.getRGB());
     }
 }

@@ -32,6 +32,7 @@ public class FriendManager extends AbstractListManager<Friend> implements Starta
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
     }
 
     @Override
@@ -55,26 +56,26 @@ public class FriendManager extends AbstractListManager<Friend> implements Starta
         try {
             final JsonObject jsonObject = new JsonParser().parse(new FileReader(friendFile)).getAsJsonObject();
             final Set<Map.Entry<String, JsonElement>> elements = jsonObject.entrySet();
-            elements.forEach(entry -> this.getList().add(new Friend(UUID.fromString(entry.getValue().getAsString()), (String)entry.getKey())));
+            elements.forEach(entry -> add(new Friend(UUID.fromString(entry.getValue().getAsString()), entry.getKey())));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void add(final UUID uuid, final String name) {
-        this.getList().add(new Friend(uuid, name));
+    public void add(UUID uuid, String name) {
+        add(new Friend(uuid, name));
         this.save();
     }
 
-    public Optional<Friend> get(final String name) {
+    public Optional<Friend> get(String name) {
         return this.getList().stream().filter(friend -> friend.getName().equalsIgnoreCase(name)).findFirst();
     }
 
-    public Optional<Friend> get(final UUID uuid) {
+    public Optional<Friend> get(UUID uuid) {
         return this.getList().stream().filter(friend -> friend.getUUID().equals(uuid)).findFirst();
     }
 
-    public boolean isFriend(final UUID uuid) {
+    public boolean isFriend(UUID uuid) {
         return this.getList().stream().anyMatch(friend -> friend.getUUID().equals(uuid));
     }
 
