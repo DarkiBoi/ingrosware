@@ -60,13 +60,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.profileManager.start();
 
         bus.bind();
-
-        try {
-            final Session session = SessionUtil.makeSession("andrealucchini257@gmail.com", "Brennan120");
-            ((IMinecraft) Minecraft.getMinecraft()).setSession(session);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        
     }
 
     @Override
