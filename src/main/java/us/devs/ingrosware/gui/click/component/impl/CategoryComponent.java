@@ -17,7 +17,7 @@ import us.devs.ingrosware.util.render.RenderUtil;
 public class CategoryComponent extends Component {
     private final MainFrame mainFrame;
     private final ModuleCategory moduleCategory;
-
+    private float scrollY;
     public CategoryComponent(MainFrame mainFrame, ModuleCategory moduleCategory, float posX, float posY, float offsetX, float offsetY, float width, float height) {
         super(moduleCategory.getLabel(), posX, posY, offsetX, offsetY, width, height);
         this.mainFrame = mainFrame;
@@ -59,5 +59,13 @@ public class CategoryComponent extends Component {
 
     public ModuleCategory getModuleCategory() {
         return moduleCategory;
+    }
+
+    public float getScrollY() {
+        return scrollY;
+    }
+
+    public void setScrollY(float scrollY) {
+        this.scrollY = scrollY;
     }
 }
