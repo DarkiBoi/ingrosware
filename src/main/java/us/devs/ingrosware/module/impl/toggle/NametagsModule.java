@@ -72,6 +72,8 @@ public class NametagsModule extends ToggleableModule {
     public boolean monsters;
     @Setting("Passives")
     public boolean passives;
+    @Setting("Rank")
+    public boolean rank = true;
 
     private final ImmutableMap<String, String> cachedEnchantmentMap = new ImmutableMap.Builder<String, String>()
             .put(Objects.requireNonNull(Enchantment.getEnchantmentByID(0)).getName(), "p").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(10)).getName(), "cob").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(1)).getName(), "fp").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(2)).getName(), "ff").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(3)).getName(), "bp").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(4)).getName(), "pp").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(5)).getName(), "r").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(6)).getName(), "aa").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(7)).getName(), "t").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(8)).getName(), "ds").put(Objects.requireNonNull(Enchantment.getEnchantmentByID(9)).getName(), "fw")
@@ -122,15 +124,13 @@ public class NametagsModule extends ToggleableModule {
                             ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ?
                             ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
                     final String str = (ping ? ChatFormatting.BLUE + p + " " : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
-                    final String entName = String.format("[%s] %s ", IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()) != null ?
-                            IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()).getLabel() : "",
-                            IngrosWare.INSTANCE.getFriendManager().get(ent.getUniqueID()).map(Friend::getName).orElse(ent.getName()));
+                    final String entName = getName(ent) + str;
                     RenderUtil.drawRect((x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth( entName + str) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
-                            mc.fontRenderer.getStringWidth( entName + str) + 3,
+                            (mc.fontRenderer.getStringWidth( entName) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
+                            mc.fontRenderer.getStringWidth( entName) + 3,
                             mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
-                    mc.fontRenderer.drawStringWithShadow( entName + str, (x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth(entName + str) >> 1)),
+                    mc.fontRenderer.drawStringWithShadow( entName, (x + (w / 2) -
+                            (mc.fontRenderer.getStringWidth(entName) >> 1)),
                             y - 3 - mc.fontRenderer.FONT_HEIGHT, clr.getRGB());
                     if (armor && ent instanceof EntityPlayer)
                         drawArmor((EntityPlayer) ent, (int) (x + w / 2), (int) (y - 1 - (mc.fontRenderer.FONT_HEIGHT * 3.15)));
@@ -201,6 +201,14 @@ public class NametagsModule extends ToggleableModule {
                 armorX += 19;
             }
         }
+    }
+
+    private String getName(EntityLivingBase entityLivingBase) {
+        final String rankTitle = rank ? IngrosWare.INSTANCE.getProfileManager().getRank(entityLivingBase.getUniqueID()) != null ?
+                "[" + IngrosWare.INSTANCE.getProfileManager().getRank(entityLivingBase.getUniqueID()).getLabel() + "]" : "" : "";
+        final String name = IngrosWare.INSTANCE.getFriendManager().get(entityLivingBase.getUniqueID()).map(Friend::getName).orElse(entityLivingBase.getName());
+
+        return String.format("%s %s", rankTitle, name);
     }
 
     private boolean isValid(EntityLivingBase entity) {

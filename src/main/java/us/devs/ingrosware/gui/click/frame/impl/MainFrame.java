@@ -11,6 +11,7 @@ import us.devs.ingrosware.gui.click.component.impl.ModuleComponent;
 import us.devs.ingrosware.gui.click.frame.Frame;
 import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.module.ModuleCategory;
+import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
@@ -39,7 +40,7 @@ public class MainFrame extends Frame {
             getComponents().add(new CategoryComponent(this, moduleCategory, getPosX(), getPosY(), offsetX, 20.0f, shift - 2, 14));
             offsetX += shift + 0.5f;
             float offsetY = 42;
-            for (IModule module : IngrosWare.INSTANCE.getModuleManager().getValues()) {
+            for (ToggleableModule module : IngrosWare.INSTANCE.getModuleManager().getToggles()) {
                 if (module.getCategory() == moduleCategory) {
                     getComponents().add(new ModuleComponent(this, module, getPosX(), getPosY(), 8, offsetY, 96, 14));
                     offsetY += 16;
@@ -98,15 +99,14 @@ public class MainFrame extends Frame {
             RenderUtil.drawBorderedRect(getPosX() + 110, getPosY() + 40, 284, getHeight() - 46, 0.5f, 0xff252525, 0xff000000);
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX() + 4, getPosY() + 4, -1);
         for (Component component : getComponents()) {
-            if (component instanceof CategoryComponent) {
+            if (component instanceof CategoryComponent)
                 component.drawScreen(mouseX, mouseY, partialTicks);
-            }
+
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             RenderUtil.prepareScissorBox(scaledResolution, getPosX() + 6.0f, getPosY() + 40, 388, getHeight() - 46);
-            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                 component.drawScreen(mouseX, mouseY, partialTicks);
-            }
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
             GL11.glPopMatrix();
         }
@@ -116,12 +116,11 @@ public class MainFrame extends Frame {
     public void keyTyped(char typedChar, int keyCode) {
         super.keyTyped(typedChar, keyCode);
         for (Component component : getComponents()) {
-            if (component instanceof CategoryComponent) {
+            if (component instanceof CategoryComponent)
                 component.keyTyped(typedChar, keyCode);
-            }
-            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+
+            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                 component.keyTyped(typedChar, keyCode);
-            }
         }
     }
 
@@ -135,13 +134,11 @@ public class MainFrame extends Frame {
             setLastPosY(getPosY() - mouseY);
         }
         for (Component component : getComponents()) {
-            if (component instanceof CategoryComponent) {
+            if (component instanceof CategoryComponent)
                 component.mouseClicked(mouseX, mouseY, mouseButton);
-            }
             if (MouseUtil.mouseWithin(mouseX, mouseY, getPosX() + 6.0f, getPosY() + 40, 388, getHeight() - 46)) {
-                if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+                if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                     component.mouseClicked(mouseX, mouseY, mouseButton);
-                }
             }
         }
     }
@@ -151,12 +148,10 @@ public class MainFrame extends Frame {
         super.mouseReleased(mouseX, mouseY, mouseButton);
         if (mouseButton == 0 && isDragging()) setDragging(false);
         for (Component component : getComponents()) {
-            if (component instanceof CategoryComponent) {
+            if (component instanceof CategoryComponent)
                 component.mouseReleased(mouseX, mouseY, mouseButton);
-            }
-            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                 component.mouseReleased(mouseX, mouseY, mouseButton);
-            }
         }
     }
 
@@ -164,20 +159,17 @@ public class MainFrame extends Frame {
     public void onGuiClosed() {
         super.onGuiClosed();
         for (Component component : getComponents()) {
-            if (component instanceof CategoryComponent) {
+            if (component instanceof CategoryComponent)
                 component.onGuiClosed();
-            }
-            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+            if (component instanceof ModuleComponent && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                 component.onGuiClosed();
-            }
         }
     }
 
     private boolean isExtended() {
         for (Component component : getComponents()) {
-            if (component instanceof ModuleComponent && ((ModuleComponent) component).isExtended() && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory()) {
+            if (component instanceof ModuleComponent && ((ModuleComponent) component).isExtended() && ((ModuleComponent) component).getModule().getCategory() == getSelectedCatergory())
                 return true;
-            }
         }
         return false;
     }

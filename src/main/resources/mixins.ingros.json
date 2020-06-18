@@ -28,6 +28,7 @@
     "MixinSPacketPosLook",
     "MixinTextComponentString",
     "MixinWorldClient",
-    "MixinAbstractClientPlayer"
+    "MixinAbstractClientPlayer",
+    "MixinFontRenderer"
   ]
 }

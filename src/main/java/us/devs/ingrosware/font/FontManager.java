@@ -16,6 +16,7 @@ import java.io.File;
 public class FontManager extends AbstractListManager<MCFontRenderer> {
     private MCFontRenderer currentFont;
     private final File dir;
+    private boolean customFont = true;
 
     public FontManager(File dir) {
         this.dir = dir;
@@ -77,6 +78,14 @@ public class FontManager extends AbstractListManager<MCFontRenderer> {
 
     public void setCurrentFont(MCFontRenderer currentFont) {
         this.currentFont = currentFont;
+    }
+
+    public boolean isUsingCustomFont() {
+        return customFont;
+    }
+
+    public void setCustomFont(boolean customFont) {
+        this.customFont = customFont;
     }
 
     public MCFontRenderer getCurrentFont() {
