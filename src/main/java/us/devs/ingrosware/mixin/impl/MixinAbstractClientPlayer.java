@@ -6,6 +6,10 @@ import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.other.EventCape;
 
@@ -22,6 +26,10 @@ public abstract class MixinAbstractClientPlayer {
     @Shadow
     public abstract NetworkPlayerInfo getPlayerInfo();
 
+    /**
+     * Need to figure a way to do with out @Overwrite
+     * @return
+     */
     @Overwrite
     @Nullable
     public ResourceLocation getLocationCape() {

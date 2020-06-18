@@ -122,7 +122,7 @@ public class NametagsModule extends ToggleableModule {
                             ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ?
                             ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
                     final String str = (ping ? ChatFormatting.BLUE + p + " " : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
-                    final String entName = String.format("[%s] %s", IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()) != null ?
+                    final String entName = String.format("[%s] %s ", IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()) != null ?
                             IngrosWare.INSTANCE.getProfileManager().getRank(ent.getUniqueID()).getLabel() : "",
                             IngrosWare.INSTANCE.getFriendManager().get(ent.getUniqueID()).map(Friend::getName).orElse(ent.getName()));
                     RenderUtil.drawRect((x + (w / 2) -

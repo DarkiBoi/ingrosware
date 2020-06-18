@@ -53,8 +53,10 @@ public enum ProfileHelper {
 
     public String getName(final UUID uuid) {
         if (CACHED_NAMES.containsValue(uuid)) {
-            return CACHED_NAMES.entrySet().stream().filter(entry -> uuid == entry.getValue())
-                    .findFirst().get().getKey();
+            for(Map.Entry<String, UUID> entry : CACHED_NAMES.entrySet()) {
+                if(entry.getValue() == uuid)
+                    return entry.getKey();
+            }
         }
 
         try {

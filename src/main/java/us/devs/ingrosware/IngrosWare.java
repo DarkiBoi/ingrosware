@@ -60,7 +60,6 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.profileManager.start();
 
         bus.bind();
-        
     }
 
     @Override
