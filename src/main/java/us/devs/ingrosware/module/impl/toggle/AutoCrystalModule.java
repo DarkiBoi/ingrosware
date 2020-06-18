@@ -115,18 +115,6 @@ public class AutoCrystalModule extends ToggleableModule {
     public boolean monsters = false;
     @Setting("Passives")
     public boolean passives = false;
-    @Setting("Passives1")
-    public boolean passives1 = false;
-    @Setting("Passives2")
-    public boolean passives2 = false;
-    @Setting("Passives3")
-    public boolean passives3 = false;
-    @Setting("Passives4")
-    public boolean passives4 = false;
-    @Setting("Passives5")
-    public boolean passives5 = false;
-    @Setting("Passives6")
-    public boolean passives6 = false;
     private final TimerUtil placeTimer = new TimerUtil();
     private final TimerUtil breakTimer = new TimerUtil();
 
