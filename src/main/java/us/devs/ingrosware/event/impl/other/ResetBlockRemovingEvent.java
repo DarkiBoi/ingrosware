@@ -1,6 +1,7 @@
 package us.devs.ingrosware.event.impl.other;
 
 import tcb.bces.event.Event;
+import tcb.bces.event.EventCancellable;
 
-public class ResetBlockRemovingEvent extends Event {
+public class ResetBlockRemovingEvent extends EventCancellable {
 }

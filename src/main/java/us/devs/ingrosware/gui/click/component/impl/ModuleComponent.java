@@ -5,7 +5,6 @@ import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.click.component.Component;
 import us.devs.ingrosware.gui.click.frame.impl.MainFrame;
 import us.devs.ingrosware.module.IModule;
-import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
@@ -20,6 +19,7 @@ public class ModuleComponent extends Component {
     private final MainFrame mainFrame;
     private final IModule module;
     private boolean extended;
+
     public ModuleComponent(MainFrame mainFrame, IModule module, float posX, float posY, float offsetX, float offsetY, float width, float height) {
         super(module.getLabel(), posX, posY, offsetX, offsetY, width, height);
         this.mainFrame = mainFrame;

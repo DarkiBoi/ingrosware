@@ -16,7 +16,6 @@
     "MixinEntityRenderer",
     "MixinGuiBossOverlay",
     "MixinGuiNewChat",
-    "MixinGuiScreen",
     "MixinLayerArmorBase",
     "MixinMainMenu",
     "MixinMinecraft",

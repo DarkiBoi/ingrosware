@@ -40,9 +40,10 @@ public abstract class MixinPlayerControllerMP implements IPlayerControllerMP {
         IngrosWare.INSTANCE.getBus().post(new DamageBlockEvent(posBlock, directionFacing));
     }
 
-    @Inject(method = "resetBlockRemoving", at = @At("HEAD"))
+    @Inject(method = "resetBlockRemoving", at = @At("HEAD"),cancellable = true)
     public void onResetBlockRemoving(CallbackInfo ci) {
         final ResetBlockRemovingEvent event = new ResetBlockRemovingEvent();
         IngrosWare.INSTANCE.getBus().post(event);
+        if (event.isCancelled()) ci.cancel();
     }
 }
