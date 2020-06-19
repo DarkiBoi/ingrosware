@@ -1,6 +1,6 @@
 package us.devs.ingrosware.keybind;
 
-import us.devs.ingrosware.keybind.task.ITask;
+import us.devs.ingrosware.keybind.task.Task;
 
 /**
  * made for Ingros
@@ -10,9 +10,9 @@ import us.devs.ingrosware.keybind.task.ITask;
  **/
 public class Keybind {
     private int key;
-    private final ITask task;
+    private final Task task;
 
-    public Keybind(int key, ITask task) {
+    public Keybind(int key, Task task) {
         this.key = key;
         this.task = task;
     }
@@ -25,7 +25,7 @@ public class Keybind {
         this.key = key;
     }
 
-    public ITask getTask() {
+    public Task getTask() {
         return task;
     }
 }

@@ -1,6 +1,6 @@
 package us.devs.ingrosware.manager.impl;
 
-import us.devs.ingrosware.manager.IManager;
+import us.devs.ingrosware.manager.Manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Brennan
  * @since 6/13/2020
  **/
-public abstract class AbstractListManager<K> implements IManager {
+public abstract class AbstractListManager<K> implements Manager {
     private List<K> registry = new ArrayList<>();
 
     public void add(K k) {

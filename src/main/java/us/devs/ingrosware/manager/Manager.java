@@ -9,5 +9,5 @@ import us.devs.ingrosware.traits.Startable;
  * @author Brennan
  * @since 6/13/2020
  **/
-public interface IManager extends Startable, Closeable {
+public interface Manager extends Startable, Closeable {
 }

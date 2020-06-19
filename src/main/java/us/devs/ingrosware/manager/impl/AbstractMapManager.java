@@ -1,6 +1,6 @@
 package us.devs.ingrosware.manager.impl;
 
-import us.devs.ingrosware.manager.IManager;
+import us.devs.ingrosware.manager.Manager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Brennan
  * @since 6/13/2020
  **/
-public abstract class AbstractMapManager<K, V> implements IManager {
+public abstract class AbstractMapManager<K, V> implements Manager {
     private final Map<K, V> registry = new HashMap<>();
 
     public void put(K k, V v) {

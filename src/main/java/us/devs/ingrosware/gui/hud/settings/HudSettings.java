@@ -12,7 +12,6 @@ import us.devs.ingrosware.gui.hud.settings.components.impl.NumberButton;
 import us.devs.ingrosware.gui.hud.settings.components.impl.StringButton;
 import us.devs.ingrosware.hud.Component;
 import us.devs.ingrosware.setting.AbstractSetting;
-import us.devs.ingrosware.setting.ISetting;
 import us.devs.ingrosware.setting.impl.BooleanSetting;
 import us.devs.ingrosware.setting.impl.ColorSetting;
 import us.devs.ingrosware.setting.impl.NumberSetting;

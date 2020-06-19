@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.StringEscapeUtils;
 import us.devs.ingrosware.IngrosWare;
-import us.devs.ingrosware.module.IModule;
+import us.devs.ingrosware.module.Module;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Persistent;
 import us.devs.ingrosware.setting.impl.ColorSetting;
@@ -16,7 +16,7 @@ import us.devs.ingrosware.setting.impl.StringSetting;
  * @author Brennan
  * @since 6/13/2020
  **/
-public class PersistentModule implements IModule {
+public class PersistentModule implements Module {
     private String label;
     private ModuleCategory category;
 

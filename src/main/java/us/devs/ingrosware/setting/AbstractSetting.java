@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
  * @author Brennan
  * @since 6/13/2020
  **/
-public abstract  class AbstractSetting<V> implements ISetting<V>, Labelable {
+public abstract  class AbstractSetting<V> implements Setting<V>, Labelable {
     private String label;
     private Object object;
     private final int valueIndex;

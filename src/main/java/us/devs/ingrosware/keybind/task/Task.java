@@ -6,6 +6,6 @@ package us.devs.ingrosware.keybind.task;
  * @author Brennan
  * @since 6/18/2020
  **/
-public interface ITask {
+public interface Task {
     void execute();
 }

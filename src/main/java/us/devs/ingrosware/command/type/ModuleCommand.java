@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.command.Command;
 import us.devs.ingrosware.command.annotation.CommandManifest;
-import us.devs.ingrosware.module.IModule;
+import us.devs.ingrosware.module.Module;
 import us.devs.ingrosware.setting.impl.*;
 import us.devs.ingrosware.util.math.MathUtil;
 import us.devs.ingrosware.util.other.Logger;
@@ -20,9 +20,9 @@ import java.awt.*;
  **/
 @CommandManifest(label = "")
 public class ModuleCommand extends Command {
-    private final IModule module;
+    private final Module module;
 
-    public ModuleCommand(IModule module) {
+    public ModuleCommand(Module module) {
         this.module = module;
         setLabel(module.getLabel());
         setDescription("a module");

@@ -11,7 +11,7 @@ import us.devs.ingrosware.traits.Labelable;
  * @author Brennan
  * @since 6/13/2020
  **/
-public interface IModule extends Labelable, Configable, IListener {
+public interface Module extends Labelable, Configable, IListener {
     String getLabel();
 
     ModuleCategory getCategory();

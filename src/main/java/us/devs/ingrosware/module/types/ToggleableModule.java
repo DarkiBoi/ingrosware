@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.keybind.Keybind;
 import us.devs.ingrosware.keybind.task.impl.ToggleModuleTask;
-import us.devs.ingrosware.module.IModule;
+import us.devs.ingrosware.module.Module;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.setting.impl.ColorSetting;
@@ -22,7 +22,7 @@ import java.awt.*;
  * @author Brennan
  * @since 6/13/2020
  **/
-public class ToggleableModule implements IModule, Hideable, Stateable {
+public class ToggleableModule implements Module, Hideable, Stateable {
     private String label, suffix;
     private ModuleCategory category;
     private Color color;
