@@ -16,7 +16,7 @@ public class CustomComponent extends Component {
     private final String text;
 
     @Setting("Color")
-    public Color color = new Color(0xFFFFFF);
+    public Color color = new Color(255,0,255);
 
     public CustomComponent(String text) {
         this.text = text;

@@ -53,7 +53,7 @@ public class ColorButton extends HudSetting {
             }
             if (0.001 * Math.floor((i / 100) * 1000.0) == 0.001 * Math.floor(hue * 1000.0)) pos = i;
         }
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawString(getLabel(), getPosX(),getPosY() + 1, 0xFFFFFFFF);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX(),getPosY() + 1, 0xFFFFFFFF);
         RenderUtil.drawRect(getPosX() + pos, getPosY() + 13, 1, 10, 0xffffffff);
     }
 

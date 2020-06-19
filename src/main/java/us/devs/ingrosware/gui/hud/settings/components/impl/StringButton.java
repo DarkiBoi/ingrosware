@@ -1,5 +1,6 @@
 package us.devs.ingrosware.gui.hud.settings.components.impl;
 
+import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import us.devs.ingrosware.IngrosWare;
@@ -29,16 +30,16 @@ public class StringButton extends HudSetting {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10);
-        RenderUtil.drawBorderedRect(getPosX(), getPosY(), IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10, 0.5F, new Color(36, 41, 51, 255).getRGB(), isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
+        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), RenderUtil.getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10);
+        RenderUtil.drawBorderedRect(getPosX(), getPosY(), RenderUtil.getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10, 0.5F, new Color(36, 41, 51, 255).getRGB(), isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
 
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(isEditinig() ? content : getLabel() + ": " + stringSetting.getValue(), getPosX() + 2, getPosY() + 3, -1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(isEditinig() ? content : getLabel() + ": " + stringSetting.getValue(), getPosX() + 2, getPosY() + getHeight() - 1 - RenderUtil.getStringHeight(), -1);
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if(MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10)) {
+        if(MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), RenderUtil.getStringWidth(getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10)) {
             if(mouseButton == 0) {
                 setEditinig(!isEditinig());
                 if (isEditinig()) {
@@ -64,7 +65,7 @@ public class StringButton extends HudSetting {
                 content = "";
                 setEditinig(false);
             } else if (Character.isLetterOrDigit(typedChar) || Character.isSpaceChar(typedChar) || specialChars.contains(Character.toString(typedChar))) {
-                if (IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(content) < 230) {
+                if (RenderUtil.getStringWidth(content) < 230) {
                     content += Character.toString(typedChar);
                 }
             }

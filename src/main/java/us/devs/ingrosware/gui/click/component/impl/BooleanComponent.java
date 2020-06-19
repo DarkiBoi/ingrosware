@@ -24,7 +24,7 @@ public class BooleanComponent extends Component {
         super.drawScreen(mouseX, mouseY, partialTicks);
         RenderUtil.drawBorderedRect(getPosX(),getPosY(),14,getHeight(),0.5f,getBooleanSetting().getValue() ?  0xff505050:0xff353535,0xff000000);
         if (getBooleanSetting().getValue()) RenderUtil.drawCheckMark(getPosX() + 3.0f,getPosY(),14,-1);
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(),getPosX() + 16,getPosY() + getHeight() - Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT,-1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(),getPosX() + 16,getPosY() + getHeight() -1- RenderUtil.getStringHeight(),-1);
     }
 
     @Override

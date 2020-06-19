@@ -57,14 +57,14 @@ public class ModuleCommand extends Command {
                         final ColorSetting colorSetting = (ColorSetting) setting;
                         if (args.length >= 5) {
                             try {
-                                final int r = MathUtil.clamp(Integer.parseInt(args[2]),0,255);
-                                final int g = MathUtil.clamp(Integer.parseInt(args[3]),0,255);
-                                final int b = MathUtil.clamp(Integer.parseInt(args[4]),0,255);
+                                final int r = MathUtil.clamp(Integer.parseInt(args[2]), 0, 255);
+                                final int g = MathUtil.clamp(Integer.parseInt(args[3]), 0, 255);
+                                final int b = MathUtil.clamp(Integer.parseInt(args[4]), 0, 255);
                                 if (args.length > 5) {
-                                    final int a = MathUtil.clamp(Integer.parseInt(args[5]),0,255);
-                                    colorSetting.setValue(new Color(r,g,b,a));
+                                    final int a = MathUtil.clamp(Integer.parseInt(args[5]), 0, 255);
+                                    colorSetting.setValue(new Color(r, g, b, a));
                                 } else {
-                                    colorSetting.setValue(new Color(r,g,b));
+                                    colorSetting.setValue(new Color(r, g, b));
                                 }
                                 Logger.printMessage(setting.getLabel() + " has been set to " + colorSetting.getValue().getRGB() + " for " + module.getLabel() + ".");
                             } catch (Exception e) {
@@ -83,11 +83,15 @@ public class ModuleCommand extends Command {
                             setting.setValue(stringBuilder.toString());
                             Logger.printMessage(setting.getLabel() + " has been set to " + setting.getValue() + " for " + module.getLabel() + ".");
                         }
-                    } else if (setting instanceof BindSetting){
+                    } else if (setting instanceof BindSetting) {
                         final BindSetting bindSetting = (BindSetting) setting;
                         if (args.length >= 3) {
-                            setting.setValue(args[2]);
-                            Logger.printMessage(setting.getLabel() + " has been set to " + Keyboard.getKeyName(bindSetting.getValue()) + " for " + module.getLabel() + ".");
+                            final int keyCode = Keyboard.getKeyIndex(args[2].toUpperCase());
+                            if (keyCode != -1) {
+                                setting.setValue(keyCode);
+                                Logger.printMessage(setting.getLabel() + " has been set to " + Keyboard.getKeyName(bindSetting.getValue()) + " for " + module.getLabel() + ".");
+                            } else
+                            Logger.printMessage("Invalid key code.");
                         } else {
                             Logger.printMessage("Not enough arguments to change setting.");
                         }

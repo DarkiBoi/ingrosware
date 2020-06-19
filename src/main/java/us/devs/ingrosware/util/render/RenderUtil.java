@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
+import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.mixin.accessors.IRenderManager;
 
 import java.awt.*;
@@ -205,6 +206,14 @@ public class RenderUtil {
             GL11.glVertex3d(bb.minX, bb.maxY, bb.minZ);
         }
         GL11.glEnd();
+    }
+
+    public static float getStringHeight() {
+        return IngrosWare.INSTANCE.getFontManager().isUsingCustomFont() ? IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight() : mc.fontRenderer.FONT_HEIGHT;
+    }
+
+    public static float getStringWidth(String text) {
+        return IngrosWare.INSTANCE.getFontManager().isUsingCustomFont() ? IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(text):mc.fontRenderer.getStringWidth(text);
     }
 
     public static void drawESPOutline(AxisAlignedBB bb, float red, float green, float blue, float alpha, float width) {

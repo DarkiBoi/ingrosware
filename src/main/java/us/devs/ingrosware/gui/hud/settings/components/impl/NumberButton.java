@@ -1,6 +1,7 @@
 package us.devs.ingrosware.gui.hud.settings.components.impl;
 
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.hud.settings.components.HudSetting;
@@ -18,10 +19,10 @@ import java.awt.*;
  * @since 6/13/2020
  **/
 public class NumberButton extends HudSetting {
-    private final NumberSetting numberSetting;
+    private final NumberSetting<Number> numberSetting;
     private boolean dragging;
 
-    public NumberButton(NumberSetting numberSetting, float posX, float posY) {
+    public NumberButton(NumberSetting<Number> numberSetting, float posX, float posY) {
         super(numberSetting.getLabel(), posX, posY);
         this.numberSetting = numberSetting;
     }
@@ -29,11 +30,11 @@ public class NumberButton extends HudSetting {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         float sliderwidth = 74;
-        float length = MathHelper.floor(((float) numberSetting.getValue() - numberSetting.getMinimum().floatValue()) / (numberSetting.getMaximum().floatValue() - numberSetting.getMinimum().floatValue()) * sliderwidth);
+        float length = MathHelper.floor((numberSetting.getValue().floatValue() - numberSetting.getMinimum().floatValue()) / (numberSetting.getMaximum().floatValue() - numberSetting.getMinimum().floatValue()) * sliderwidth);
         boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), 80, 10);
         RenderUtil.drawBorderedRect(getPosX(), getPosY(), 80, 10, 0.5F, new Color(36, 41, 51, 255).getRGB(), isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
         RenderUtil.drawRect(getPosX() + length + 1f, getPosY() + 1, 4f, 8, new Color(0, 107, 214, 255).getRGB());
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawString(numberSetting.getLabel() + ": " + numberSetting.getValue().toString(), getPosX() + 40 -  IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(numberSetting.getLabel() + ": " + numberSetting.getValue().toString()) / 2, getPosY() + 4, -1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(numberSetting.getLabel() + ": " + numberSetting.getValue().toString(), getPosX() + 40 -  RenderUtil.getStringWidth(numberSetting.getLabel() + ": " + numberSetting.getValue().toString()) / 2, getPosY() + 2, -1);
 
         if (dragging) {
             if (numberSetting.getValue() instanceof Double) {
@@ -60,7 +61,7 @@ public class NumberButton extends HudSetting {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), 80, 10);
+        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), 100, 10);
         if (isHovered)
             dragging = true;
     }

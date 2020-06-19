@@ -2,17 +2,21 @@ package us.devs.ingrosware.module.impl.toggle;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,20 +27,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector4f;
 import tcb.bces.listener.Subscribe;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.event.impl.render.Render2DEvent;
-import us.devs.ingrosware.event.impl.render.Render3DEvent;
 import us.devs.ingrosware.event.impl.render.RenderNameEvent;
 import us.devs.ingrosware.friend.Friend;
-import us.devs.ingrosware.mixin.accessors.IRenderManager;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
-import us.devs.ingrosware.setting.annotation.Clamp;
 import us.devs.ingrosware.setting.annotation.Setting;
 import us.devs.ingrosware.util.math.MathUtil;
 import us.devs.ingrosware.util.render.GLUProjection;
@@ -57,7 +58,7 @@ import java.util.Objects;
 @Toggleable(label = "Nametags", category = ModuleCategory.RENDER, color = 0xff3f33ff, bind = Keyboard.KEY_NONE, hidden = true)
 public class NametagsModule extends ToggleableModule {
     @Setting("PlayerColor")
-    public Color playerColor = new Color(255, 255, 255);
+    public Color playerColor = new Color(255, 0, 0);
     @Setting("Armor")
     public boolean armor = true;
     @Setting("Ping")
@@ -123,17 +124,17 @@ public class NametagsModule extends ToggleableModule {
                     final ChatFormatting healthColor = (Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 1.45f ?
                             ChatFormatting.GREEN : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 2f ?
                             ChatFormatting.YELLOW : Math.min((int) ent.getHealth() + (int) ent.getAbsorptionAmount(), 20) >= ent.getMaxHealth() / 3f ? ChatFormatting.RED : ChatFormatting.DARK_RED);
-                    final String str = (ping ? ChatFormatting.BLUE + p + " " : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
+                    final String str = (ping ? " " + ChatFormatting.BLUE + p + " " : "") + healthColor + " " + ((int) ent.getHealth() + (int) ent.getAbsorptionAmount());
                     final String entName = getName(ent) + str;
                     RenderUtil.drawRect((x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth( entName) >> 1)) - 2, y - 5 - mc.fontRenderer.FONT_HEIGHT,
-                            mc.fontRenderer.getStringWidth( entName) + 3,
-                            mc.fontRenderer.FONT_HEIGHT + 3, 0x60000000);
-                    mc.fontRenderer.drawStringWithShadow( entName, (x + (w / 2) -
-                            (mc.fontRenderer.getStringWidth(entName) >> 1)),
-                            y - 3 - mc.fontRenderer.FONT_HEIGHT, clr.getRGB());
+                                    (RenderUtil.getStringWidth(entName) / 2)) - 1, y - 5 - RenderUtil.getStringHeight(),
+                            RenderUtil.getStringWidth(entName) + 2,
+                            RenderUtil.getStringHeight() + 3, 0x60000000);
+                    mc.fontRenderer.drawStringWithShadow(entName, (x + (w / 2) -
+                                    (RenderUtil.getStringWidth(entName) / 2)),
+                            y - 3 - RenderUtil.getStringHeight(), clr.getRGB());
                     if (armor && ent instanceof EntityPlayer)
-                        drawArmor((EntityPlayer) ent, (int) (x + w / 2), (int) (y - 1 - (mc.fontRenderer.FONT_HEIGHT * 3.15)));
+                        drawArmor((EntityPlayer) ent, (int) (x + w / 2), (int) (y - 1 - (RenderUtil.getStringHeight() * 3.15)));
                     GlStateManager.scale(1.0f, 1.0f, 1.0f);
                     GlStateManager.popMatrix();
                 }
@@ -201,6 +202,65 @@ public class NametagsModule extends ToggleableModule {
                 armorX += 19;
             }
         }
+    }
+
+    private void renderItemOverlayIntoGUI(ItemStack stack, int xPosition, int yPosition, String text) {
+        if (!stack.isEmpty()) {
+            if (stack.getCount() != 1 || text != null) {
+                String s = text == null ? String.valueOf(stack.getCount()) : text;
+                GlStateManager.disableLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.disableBlend();
+                mc.fontRenderer.drawStringWithShadow(s, (xPosition + 19 - 2 - RenderUtil.getStringWidth(s)), (float) (yPosition + RenderUtil.getStringHeight()), 16777215);
+                GlStateManager.enableLighting();
+                GlStateManager.enableDepth();
+                GlStateManager.enableBlend();
+            }
+
+            if (stack.getItem().showDurabilityBar(stack)) {
+                GlStateManager.disableLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.disableTexture2D();
+                GlStateManager.disableAlpha();
+                GlStateManager.disableBlend();
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
+                double health = stack.getItem().getDurabilityForDisplay(stack);
+                int rgbfordisplay = stack.getItem().getRGBDurabilityForDisplay(stack);
+                int i = Math.round(13.0F - (float) health * 13.0F);
+                this.draw(bufferbuilder, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
+                this.draw(bufferbuilder, xPosition + 2, yPosition + 13, i, 1, rgbfordisplay >> 16 & 255, rgbfordisplay >> 8 & 255, rgbfordisplay & 255, 255);
+                GlStateManager.enableBlend();
+                GlStateManager.enableAlpha();
+                GlStateManager.enableTexture2D();
+                GlStateManager.enableLighting();
+                GlStateManager.enableDepth();
+            }
+
+            EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
+            float f3 = entityplayersp == null ? 0.0F : entityplayersp.getCooldownTracker().getCooldown(stack.getItem(), Minecraft.getMinecraft().getRenderPartialTicks());
+            if (f3 > 0.0F) {
+                GlStateManager.disableLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.disableTexture2D();
+                Tessellator tessellator1 = Tessellator.getInstance();
+                BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+                this.draw(bufferbuilder1, xPosition, yPosition + MathHelper.floor(16.0F * (1.0F - f3)), 16, MathHelper.ceil(16.0F * f3), 255, 255, 255, 127);
+                GlStateManager.enableTexture2D();
+                GlStateManager.enableLighting();
+                GlStateManager.enableDepth();
+            }
+        }
+
+    }
+
+    private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        renderer.pos((double) (x + 0), (double) (y + 0), 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double) (x + 0), (double) (y + height), 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double) (x + width), (double) (y + height), 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double) (x + width), (double) (y + 0), 0.0D).color(red, green, blue, alpha).endVertex();
+        Tessellator.getInstance().draw();
     }
 
     private String getName(EntityLivingBase entityLivingBase) {

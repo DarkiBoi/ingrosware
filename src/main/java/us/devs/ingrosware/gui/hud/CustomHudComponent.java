@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.hud.type.CustomComponent;
+import us.devs.ingrosware.util.render.RenderUtil;
 
 import java.io.IOException;
 
@@ -50,10 +51,10 @@ public class CustomHudComponent extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawCenteredString(mc.fontRenderer, "Custom Text Component", width / 2, 20,
+        drawString(mc.fontRenderer, "Custom Text Component", (int) (width / 2 - RenderUtil.getStringWidth("Custom Text Component") / 2), 20,
                 0xFFFFFFFF);
         if (text.getText().isEmpty()) {
-            drawString(mc.fontRenderer, "I hate zim", width / 2 - 96,
+            drawString(mc.fontRenderer, "I hate zim", (int) (width / 2 - RenderUtil.getStringWidth("I hate zim") / 2),
                     66, 0xFF888888);
         }
         text.drawTextBox();

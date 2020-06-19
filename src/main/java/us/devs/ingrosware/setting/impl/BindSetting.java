@@ -21,9 +21,11 @@ public class BindSetting extends AbstractSetting<Integer> {
 
     @Override
     public void setValue(String value) {
-        final int keyCode = Keyboard.getKeyIndex(value.toUpperCase());
-        if (keyCode != -1) {
-            setValue(keyCode);
+        try {
+            final int i = Integer.parseInt(value);
+            setValue(i);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

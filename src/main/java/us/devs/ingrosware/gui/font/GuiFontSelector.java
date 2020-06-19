@@ -33,7 +33,8 @@ public class GuiFontSelector extends GuiScreen {
     public void initGui() {
         this.guiOptionButton = addButton(new GuiOptionButton(1,
                 this.width / 2 - 155, this.height - 38,
-                "Use Custom Font?: " + IngrosWare.INSTANCE.getFontManager().isUsingCustomFont()));
+                "Use Custom Font?: " +
+                        IngrosWare.INSTANCE.getFontManager().isUsingCustomFont()));
         this.buttonList.add(new GuiOptionButton(5,
                 this.width / 2 - 155 + 160, this.height - 38, "Done"));
         this.list = new GuiFontSelector.List(this.mc);

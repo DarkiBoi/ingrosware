@@ -5,10 +5,10 @@ import org.lwjgl.input.Mouse;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.click.component.Component;
 import us.devs.ingrosware.gui.click.frame.impl.MainFrame;
+import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.setting.AbstractSetting;
-import us.devs.ingrosware.setting.impl.BooleanSetting;
-import us.devs.ingrosware.setting.impl.NumberSetting;
+import us.devs.ingrosware.setting.impl.*;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
@@ -22,12 +22,12 @@ import java.util.ArrayList;
  **/
 public class ModuleComponent extends Component {
     private final MainFrame mainFrame;
-    private final ToggleableModule module;
+    private final IModule module;
     private boolean extended;
     private final ArrayList<Component> components = new ArrayList<>();
     private float scrollY;
 
-    public ModuleComponent(MainFrame mainFrame, ToggleableModule module, float posX, float posY, float offsetX, float offsetY, float width, float height) {
+    public ModuleComponent(MainFrame mainFrame, IModule module, float posX, float posY, float offsetX, float offsetY, float width, float height) {
         super(module.getLabel(), posX, posY, offsetX, offsetY, width, height);
         this.mainFrame = mainFrame;
         this.module = module;
@@ -53,8 +53,21 @@ public class ModuleComponent extends Component {
                     getComponents().add(new NumberComponent((NumberSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
                     offsetY += 16;
                 }
+                if (setting instanceof ModeStringSetting) {
+                    getComponents().add(new ModeStringComponent((ModeStringSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
+                    offsetY += 16;
+                }
+                if (setting instanceof ColorSetting) {
+                    getComponents().add(new ColorComponent((ColorSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
+                    offsetY += 16;
+                }
+                if (setting instanceof BindSetting) {
+                    getComponents().add(new BindComponent((BindSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
+                    offsetY += 16;
+                }
             }
         }
+        if (getModule() instanceof ToggleableModule) getComponents().add(new ModuleBindComponent((ToggleableModule) getModule(),getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
     }
 
     @Override
@@ -77,7 +90,7 @@ public class ModuleComponent extends Component {
                 setScrollY((int) -(getCurrentHeight() - (getMainFrame().getHeight() - 50)));
         } else if (getScrollY() < 0) setScrollY(0);
         RenderUtil.drawBorderedRect(getPosX(), getPosY(), getWidth(), getHeight(), 0.5f, getModule().isEnabled() ? 0xff505050 : 0xff353535, 0xff000000);
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX() + getWidth() / 2 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(getLabel()) >> 1), getPosY() + 3, getModule().isEnabled() ? -1 : 0xff858585);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX() + getWidth() / 2 - (RenderUtil.getStringWidth(getLabel()) / 2), getPosY() + getHeight() - 1 - RenderUtil.getStringHeight(), getModule().isEnabled() ? -1 : 0xff858585);
         if (isExtended() && getMainFrame().getSelectedCatergory() == getModule().getCategory()) {
             for (Component component : getComponents()) {
                 component.drawScreen(mouseX, mouseY, partialTicks);
@@ -102,7 +115,8 @@ public class ModuleComponent extends Component {
         if (hovered) {
             switch (mouseButton) {
                 case 0:
-                    getModule().toggle();
+                    if (getModule() instanceof ToggleableModule)
+                        ((ToggleableModule) getModule()).toggle();
                     break;
                 case 1:
                     if (!getComponents().isEmpty()) {
@@ -168,7 +182,7 @@ public class ModuleComponent extends Component {
         return mainFrame;
     }
 
-    public ToggleableModule getModule() {
+    public IModule getModule() {
         return module;
     }
 

@@ -18,17 +18,13 @@ import java.awt.*;
 @ComponentManifest(label = "Watermark", x = 2, y = 2, width = 58, height = 18)
 public class WatermarkComponent extends Component {
     @Setting("Color")
-    public Color color = new Color(255, 255, 255);
-
-    @Clamp(minimum = "5", maximum = "30")
-    @Setting("Test")
-    public int test = 10;
+    public Color color = new Color(255, 0, 255);
 
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
         super.onDraw(scaledResolution);
         if (mc.world == null || mc.player == null)
             return;
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(IngrosWare.INSTANCE.getLabel(), getX(), getY(), color.getRGB());
+        mc.fontRenderer.drawStringWithShadow(IngrosWare.INSTANCE.getLabel(), getX(), getY(), color.getRGB());
     }
 }

@@ -1,5 +1,6 @@
 package us.devs.ingrosware.gui.hud.settings.components.impl;
 
+import net.minecraft.client.Minecraft;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.hud.settings.components.HudSetting;
 import us.devs.ingrosware.setting.impl.BooleanSetting;
@@ -26,7 +27,7 @@ public class BooleanButton extends HudSetting {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         boolean isHovered = MouseUtil.mouseWithin(mouseX,mouseY,getPosX(), getPosY(), 10, 10);
         RenderUtil.drawBorderedRect(getPosX(), getPosY(), 10, 10,0.5F, new Color(36,41,51,255).getRGB(),isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawString(booleanSetting.getLabel(), getPosX() + 12, getPosY() + 3, -1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(booleanSetting.getLabel(), getPosX() + 12, getPosY() + 3, -1);
         if(booleanSetting.getValue()) {
             RenderUtil.drawCheckMark(getPosX() + 5,getPosY() - 2,10,new Color(0, 107, 214, 255).getRGB());
         }

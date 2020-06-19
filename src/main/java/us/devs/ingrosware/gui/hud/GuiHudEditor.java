@@ -48,7 +48,7 @@ public class GuiHudEditor extends GuiScreen {
             RenderUtil.drawRect(hudComponent.getX(), hudComponent.getY(), hudComponent.getWidth(), hudComponent.getHeight(), hudComponent.isDragging() ? 0x95000000 : 0x80000000);
 
             if (!hudComponent.isLabelHidden())
-                fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 - (mc.fontRenderer.getStringWidth(hudComponent.getLabel()) >> 1), hudComponent.getY() + hudComponent.getHeight() / 2 - (mc.fontRenderer.FONT_HEIGHT >> 1), new Color(255, 255, 255, 83).getRGB());
+                fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 - (RenderUtil.getStringWidth(hudComponent.getLabel()) / 2), hudComponent.getY() + hudComponent.getHeight() / 2 - (RenderUtil.getStringHeight() / 2), new Color(255, 255, 255, 83).getRGB());
         });
     }
 

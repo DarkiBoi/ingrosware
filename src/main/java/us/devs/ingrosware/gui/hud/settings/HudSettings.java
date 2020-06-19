@@ -81,8 +81,8 @@ public class HudSettings extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
         ScaledResolution scaledResolution = new ScaledResolution(mc);
         RenderUtil.drawBordered(scaledResolution.getScaledWidth() / 2 - 100, scaledResolution.getScaledHeight() / 2 - 100, scaledResolution.getScaledWidth() / 2 + 100, scaledResolution.getScaledHeight() / 2 + 100, 0.5, new Color(15, 15, 15, 255).getRGB(), new Color(15, 15, 15, 255).getRGB());        RenderUtil.drawRect(scaledResolution.getScaledWidth() / 2 + 86,scaledResolution.getScaledHeight() / 2 - 96,10,10,new Color(0xFF4548).getRGB());
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow("x",scaledResolution.getScaledWidth() / 2 + 88.5,scaledResolution.getScaledHeight() / 2 - 95, -1);
-        IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(hudComp.getLabel(), scaledResolution.getScaledWidth() / 2 - IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(hudComp.getLabel()) / 2, scaledResolution.getScaledHeight() / 2 - 95, -1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("x",scaledResolution.getScaledWidth() / 2 + 88.5f,scaledResolution.getScaledHeight() / 2 - 95, -1);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(hudComp.getLabel(), scaledResolution.getScaledWidth() / 2 - RenderUtil.getStringWidth(hudComp.getLabel()) / 2, scaledResolution.getScaledHeight() / 2 - 95, -1);
         components.forEach(component -> component.drawScreen(mouseX, mouseY, partialTicks));
     }
 

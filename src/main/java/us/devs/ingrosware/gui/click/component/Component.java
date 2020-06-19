@@ -9,7 +9,6 @@ package us.devs.ingrosware.gui.click.component;
 public class Component {
     private String label;
     private float posX, posY, offsetX,offsetY,width,height;
-    private boolean dragging;
     public Component(String label,float posX, float posY, float offsetX, float offsetY, float width, float height) {
         this.label = label;
         this.posX = posX + offsetX;
@@ -97,13 +96,5 @@ public class Component {
 
     public void setHeight(float height) {
         this.height = height;
-    }
-
-    public boolean isDragging() {
-        return dragging;
-    }
-
-    public void setDragging(boolean dragging) {
-        this.dragging = dragging;
     }
 }

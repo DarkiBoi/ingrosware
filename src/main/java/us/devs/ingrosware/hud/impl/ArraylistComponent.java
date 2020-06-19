@@ -8,6 +8,7 @@ import us.devs.ingrosware.hud.Component;
 import us.devs.ingrosware.hud.annotation.ComponentManifest;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.setting.annotation.Setting;
+import us.devs.ingrosware.util.render.RenderUtil;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,11 +33,11 @@ public class ArraylistComponent extends Component {
             return;
         final ArrayList<ToggleableModule> sorted = new ArrayList<>(IngrosWare.INSTANCE.getModuleManager().getToggles());
         float y = getY();
-        sorted.sort(Comparator.comparingDouble(m -> -IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(m.getLabel() + (m.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(m.getSuffix().toLowerCase()) + "]":""))));
+        sorted.sort(Comparator.comparingDouble(m -> -RenderUtil.getStringWidth(m.getLabel() + (m.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(m.getSuffix().toLowerCase()) + "]":""))));
         for (ToggleableModule module : sorted) {
             if (module.getState() && !module.isHidden()) {
-                IngrosWare.INSTANCE.getFontManager().getCurrentFont().drawStringWithShadow(module.getLabel() + (module.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(module.getSuffix().toLowerCase()) + "]":""), getX() + ((getX() + getWidth() / 2) > (scaledResolution.getScaledWidth() >> 1) ? (getWidth() - IngrosWare.INSTANCE.getFontManager().getCurrentFont().getStringWidth(module.getLabel() + (module.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(module.getSuffix().toLowerCase()) + "]":""))) : 0), y + ((getY() + getHeight() / 2) > (scaledResolution.getScaledHeight() >> 1) ? getHeight() - IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight() : 0), rainbow ? getRainbow(6000, (int) (y * 30), 0.85f):module.getColor().getRGB());
-                y += ((getY() + getHeight() / 2) > scaledResolution.getScaledHeight() >> 1) ? -IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight() : IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight();
+                mc.fontRenderer.drawStringWithShadow(module.getLabel() + (module.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(module.getSuffix().toLowerCase()) + "]":""), getX() + ((getX() + getWidth() / 2) > (scaledResolution.getScaledWidth() >> 1) ? (getWidth() - RenderUtil.getStringWidth(module.getLabel() + (module.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(module.getSuffix().toLowerCase()) + "]":""))) : 0), y + ((getY() + getHeight() / 2) > (scaledResolution.getScaledHeight() >> 1) ? getHeight() - RenderUtil.getStringHeight() : 0), rainbow ? getRainbow(6000, (int) (y * 30), 0.85f):module.getColor().getRGB());
+                y += ((getY() + getHeight() / 2) > scaledResolution.getScaledHeight() >> 1) ? -RenderUtil.getStringHeight() : RenderUtil.getStringHeight();
             }
         }
     }

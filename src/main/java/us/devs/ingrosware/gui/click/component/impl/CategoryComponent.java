@@ -18,6 +18,7 @@ public class CategoryComponent extends Component {
     private final MainFrame mainFrame;
     private final ModuleCategory moduleCategory;
     private float scrollY;
+
     public CategoryComponent(MainFrame mainFrame, ModuleCategory moduleCategory, float posX, float posY, float offsetX, float offsetY, float width, float height) {
         super(moduleCategory.getLabel(), posX, posY, offsetX, offsetY, width, height);
         this.mainFrame = mainFrame;
@@ -27,8 +28,8 @@ public class CategoryComponent extends Component {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        RenderUtil.drawBorderedRect(getPosX(), getPosY(), getWidth(), getHeight(), 0.5f, getMainFrame().getSelectedCatergory() == getModuleCategory() ? 0xff505050:0xff353535, 0xff000000);
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX() + getWidth() / 2 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(getLabel()) >> 1), getPosY() + 3, getMainFrame().getSelectedCatergory() == getModuleCategory() ?-1:0xff858585);
+        RenderUtil.drawBorderedRect(getPosX(), getPosY(), getWidth(), getHeight(), 0.5f, getMainFrame().getSelectedCatergory() == getModuleCategory() ? 0xff505050 : 0xff353535, 0xff000000);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(getLabel(), getPosX() + getWidth() / 2 - RenderUtil.getStringWidth(getLabel()) / 2, getPosY() + 3, getMainFrame().getSelectedCatergory() == getModuleCategory() ? -1 : 0xff858585);
     }
 
     @Override

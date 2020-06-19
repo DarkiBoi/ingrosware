@@ -40,7 +40,7 @@ public class MainFrame extends Frame {
             getComponents().add(new CategoryComponent(this, moduleCategory, getPosX(), getPosY(), offsetX, 20.0f, shift - 2, 14));
             offsetX += shift + 0.5f;
             float offsetY = 42;
-            for (ToggleableModule module : IngrosWare.INSTANCE.getModuleManager().getToggles()) {
+            for (IModule module : IngrosWare.INSTANCE.getModuleManager().getValues()) {
                 if (module.getCategory() == moduleCategory) {
                     getComponents().add(new ModuleComponent(this, module, getPosX(), getPosY(), 8, offsetY, 96, 14));
                     offsetY += 16;
