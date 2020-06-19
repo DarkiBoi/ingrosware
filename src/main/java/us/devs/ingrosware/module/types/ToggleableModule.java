@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.StringEscapeUtils;
 import us.devs.ingrosware.IngrosWare;
+import us.devs.ingrosware.keybind.Keybind;
+import us.devs.ingrosware.keybind.task.impl.ToggleModuleTask;
 import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
@@ -24,7 +26,7 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
     private String label, suffix;
     private ModuleCategory category;
     private Color color;
-    private int bind;
+    private Keybind keybind;
     boolean hidden, state;
 
     public final Minecraft mc = Minecraft.getMinecraft();
@@ -35,7 +37,7 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
             this.label = toggleable.label();
             this.category = toggleable.category();
             this.color = new Color(toggleable.color());
-            this.bind = toggleable.bind();
+            this.keybind = new Keybind(toggleable.bind(), new ToggleModuleTask(this));
             this.hidden = toggleable.hidden();
             this.state = toggleable.state();
         }
@@ -57,8 +59,12 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
         return category;
     }
 
+    public Keybind getKeybind() {
+        return keybind;
+    }
+
     public int getBind() {
-        return bind;
+        return getKeybind().getKey();
     }
 
     public Color getColor() {
@@ -92,7 +98,7 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
     }
 
     public void setBind(int bind) {
-        this.bind = bind;
+        this.keybind.setKey(bind);
     }
 
     public String getSuffix() {

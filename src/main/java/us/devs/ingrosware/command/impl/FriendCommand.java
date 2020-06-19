@@ -33,38 +33,38 @@ public class FriendCommand extends Command {
                 final String nickName = (args.length == 4) ? args[3] : args[2];
                 final String name = args[2];
                 if (IngrosWare.INSTANCE.getFriendManager().get(nickName).isPresent()) {
-                    clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", ChatColor.WHITE).send();
                     return;
                 }
                 UUID uuid = ProfileHelper.INSTANCE.getUUID(name);
                 if (uuid == null)
                     return;
                 if (IngrosWare.INSTANCE.getFriendManager().get(uuid).isPresent()) {
-                    clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", ChatColor.WHITE).send();
                     return;
                 }
                 if(mc.getConnection().getPlayerInfo(name) != null) {
                     final NetworkPlayerInfo player = mc.getConnection().getPlayerInfo(name);
                     if (IngrosWare.INSTANCE.getFriendManager().get(player.getGameProfile().getId()).isPresent()) {
-                        clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", new ChatColor[0]).send();
+                        clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", ChatColor.WHITE).send();
                         return;
                     }
                     IngrosWare.INSTANCE.getFriendManager().add(player.getGameProfile().getId(), nickName);
                 } else {
-                    clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" is not in the server, fetching id...", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" is not in the server, fetching id...", ChatColor.WHITE).send();
                     uuid = ProfileHelper.INSTANCE.getUUID(name);
                     if (uuid == null) {
-                        clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" does not exist.", new ChatColor[0]).send();
+                        clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" does not exist.", ChatColor.WHITE).send();
                         return;
                     }
                     if (IngrosWare.INSTANCE.getFriendManager().get(uuid).isPresent()) {
-                        clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", new ChatColor[0]).send();
+                        clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(nickName, ChatColor.GRAY).appendText(" is already a friend.", ChatColor.WHITE).send();
                         return;
                     }
 
                     IngrosWare.INSTANCE.getFriendManager().add(uuid, nickName);
                 }
-                clientChatMsg().appendText("Added ", new ChatColor[0]).appendText(nickName, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
+                clientChatMsg().appendText("Added ", ChatColor.WHITE).appendText(nickName, ChatColor.GRAY).appendText(" as a friend.", ChatColor.WHITE).send();
                 break;
             }
             case "r":
@@ -77,7 +77,7 @@ public class FriendCommand extends Command {
                     final Friend friend = IngrosWare.INSTANCE.getFriendManager().get(name).get();
                     IngrosWare.INSTANCE.getFriendManager().getList().remove(friend);
                     IngrosWare.INSTANCE.getFriendManager().save();
-                    clientChatMsg().appendText("Removed ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Removed ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" as a friend.", ChatColor.WHITE).send();
                     return;
                 }
 
@@ -86,23 +86,23 @@ public class FriendCommand extends Command {
                     final Friend friend = IngrosWare.INSTANCE.getFriendManager().get(player.getGameProfile().getId()).get();
                     IngrosWare.INSTANCE.getFriendManager().getList().remove(friend);
                     IngrosWare.INSTANCE.getFriendManager().save();
-                    clientChatMsg().appendText("Removed ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Removed ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" as a friend.", ChatColor.WHITE).send();
                 } else {
-                    clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" is not in the server, fetching id...", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" is not in the server, fetching id...", ChatColor.WHITE).send();
                     final UUID uuid = ProfileHelper.INSTANCE.getUUID(name);
                     if (uuid == null) {
-                        clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" does not exist.", new ChatColor[0]).send();
+                        clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" does not exist.", ChatColor.WHITE).send();
                         return;
                     }
                     final Optional<Friend> friend = IngrosWare.INSTANCE.getFriendManager().get(uuid);
                     if (!friend.isPresent()) {
-                        clientChatMsg().appendText("Player ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" is not a friend", new ChatColor[0]).send();
+                        clientChatMsg().appendText("Player ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" is not a friend", ChatColor.WHITE).send();
                         return;
                     }
 
                     IngrosWare.INSTANCE.getFriendManager().getList().remove(friend.get());
                     IngrosWare.INSTANCE.getFriendManager().save();
-                    clientChatMsg().appendText("Removed ", new ChatColor[0]).appendText(name, ChatColor.GRAY).appendText(" as a friend.", new ChatColor[0]).send();
+                    clientChatMsg().appendText("Removed ", ChatColor.WHITE).appendText(name, ChatColor.GRAY).appendText(" as a friend.", ChatColor.WHITE).send();
                 }
                 break;
             }

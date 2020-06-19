@@ -9,6 +9,7 @@ import us.devs.ingrosware.event.EventDispatcher;
 import us.devs.ingrosware.font.FontManager;
 import us.devs.ingrosware.friend.FriendManager;
 import us.devs.ingrosware.hud.manager.ComponentManager;
+import us.devs.ingrosware.macro.MacroManager;
 import us.devs.ingrosware.mixin.accessors.IMinecraft;
 import us.devs.ingrosware.module.manager.ModuleManager;
 import us.devs.ingrosware.profile.ProfileManager;
@@ -37,6 +38,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
     private ComponentManager componentManager;
     private FontManager fontManager;
     private FriendManager friendManager;
+    private MacroManager macroManager;
     private final SettingManager settingManager = new SettingManager();
     private final ProfileManager profileManager = new ProfileManager();
 
@@ -49,12 +51,14 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
 
         this.fontManager = new FontManager(new File(baseDir, "fonts"));
         this.componentManager = new ComponentManager(new File(baseDir, "components"));
+        this.macroManager = new MacroManager(new File(baseDir, "macros"));
         this.moduleManager = new ModuleManager(new File(baseDir, "modules"));
         this.commandManager = new CommandManager(new File(baseDir, "commands"));
         this.friendManager = new FriendManager(baseDir);
         this.friendManager.start();
         this.fontManager.start();
         this.componentManager.start();
+        this.macroManager.start();
         this.moduleManager.start();
         this.commandManager.start();
         this.profileManager.start();
@@ -69,6 +73,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
         this.friendManager.close();
         this.fontManager.close();
         this.componentManager.close();
+        this.macroManager.close();
         this.moduleManager.close();
         this.friendManager.close();
         this.profileManager.close();
@@ -93,6 +98,10 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
 
     public FontManager getFontManager() {
         return fontManager;
+    }
+
+    public MacroManager getMacroManager() {
+        return macroManager;
     }
 
     public CommandManager getCommandManager() {

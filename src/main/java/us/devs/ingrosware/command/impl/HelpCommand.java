@@ -22,7 +22,7 @@ public class HelpCommand extends Command {
         final ChatBuilder chatBuilder = clientChatMsg();
 
         IngrosWare.INSTANCE.getCommandManager().getValues().forEach(command -> {
-            chatBuilder.appendText(command.getLabel(), ChatColor.GRAY, new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command.getDescription()))).appendText(", ", new ChatColor[0]);
+            chatBuilder.appendText(command.getLabel(), ChatColor.GRAY, new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command.getDescription()))).appendText(", ", ChatColor.WHITE);
         });
         chatBuilder.send();
     }

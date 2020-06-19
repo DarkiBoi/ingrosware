@@ -90,13 +90,13 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
     }
 
     public void load() {
-        getValues().forEach(plugin -> {
-            Path pluginConfiguration = new File(dir, plugin.getLabel().toLowerCase() + ".json").toPath();
-            if (Files.exists(pluginConfiguration)) {
-                try (Reader reader = new FileReader(pluginConfiguration.toFile())) {
+        getValues().forEach(module -> {
+            Path moduleConfig = new File(dir, module.getLabel().toLowerCase() + ".json").toPath();
+            if (Files.exists(moduleConfig)) {
+                try (Reader reader = new FileReader(moduleConfig.toFile())) {
                     final JsonElement element = new JsonParser().parse(reader);
                     if (element.isJsonObject())
-                        plugin.load(element.getAsJsonObject());
+                        module.load(element.getAsJsonObject());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -112,17 +112,17 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
                     configuration.delete();
         }
 
-        getValues().forEach(plugin -> {
-            Path pluginConfiguration = new File(dir, plugin.getLabel().toLowerCase() + ".json").toPath();
+        getValues().forEach(module -> {
+            Path moduleConfig = new File(dir, module.getLabel().toLowerCase() + ".json").toPath();
             final JsonObject object = new JsonObject();
-            plugin.save(object);
+            module.save(object);
             if (!object.entrySet().isEmpty()) {
                 try {
-                    Files.createFile(pluginConfiguration);
+                    Files.createFile(moduleConfig);
                 } catch (IOException e) {
                     return;
                 }
-                try (Writer writer = new FileWriter(pluginConfiguration.toFile())) {
+                try (Writer writer = new FileWriter(moduleConfig.toFile())) {
                     writer.write(new GsonBuilder()
                             .setPrettyPrinting()
                             .create()

@@ -25,12 +25,10 @@ public class NoVelocityModule extends ToggleableModule {
     public void onPacket(PacketEvent event) {
         if (mc.player == null) return;
         if (event.getType() == EventType.POST) {
-            if ((event.getPacket() instanceof SPacketEntityVelocity) && (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId())) {
+            if ((event.getPacket() instanceof SPacketEntityVelocity) && (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()))
                 event.setCancelled(true);
-            }
-            if (event.getPacket() instanceof SPacketExplosion) {
+            if (event.getPacket() instanceof SPacketExplosion)
                 event.setCancelled(true);
-            }
         }
     }
 }

@@ -22,7 +22,7 @@ public class ModulesCommand extends Command {
 
         IngrosWare.INSTANCE.getModuleManager().getToggles().forEach(toggleableModule -> {
             chatBuilder.appendText(toggleableModule.getLabel(), toggleableModule.getState() ? ChatColor.GREEN : ChatColor.RED, new ClickEvent(ClickEvent.Action.RUN_COMMAND, "-toggle " + toggleableModule.getLabel()))
-            .appendText(",", new ChatColor[0]);
+            .appendText(",", ChatColor.WHITE);
         });
 
         chatBuilder.send();

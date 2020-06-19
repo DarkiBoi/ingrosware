@@ -19,7 +19,8 @@ public class BindCommand extends Command {
                 final int keyCode = Keyboard.getKeyIndex(args[2].toUpperCase());
                 if (keyCode != -1) {
                     module.setBind(keyCode);
-                    clientChatMsg().appendText(module.getLabel(), new ChatColor[0]).appendText(" is now bound to ", new ChatColor[0]).appendText(Keyboard.getKeyName(keyCode), new ChatColor[0]).send();
+                    clientChatMsg().appendText(module.getLabel(), ChatColor.WHITE)
+                            .appendText(" is now bound to ", ChatColor.WHITE).appendText(Keyboard.getKeyName(keyCode), ChatColor.WHITE).send();
                 } else {
                     clientChatMsg().appendText("This is not a valid key code.", ChatColor.RED).send();
                 }
@@ -27,7 +28,7 @@ public class BindCommand extends Command {
                 clientChatMsg().appendText("That module does not exist!", ChatColor.RED).send();
             }
         } else {
-            clientChatMsg().appendText("Invalid arguments!", ChatColor.RED).appendText(" Usage: -bind [module] [key]", new ChatColor[0]).send();
+            clientChatMsg().appendText("Invalid arguments!", ChatColor.RED).appendText(" Usage: -bind [module] [key]", ChatColor.RED).send();
         }
     }
 }
