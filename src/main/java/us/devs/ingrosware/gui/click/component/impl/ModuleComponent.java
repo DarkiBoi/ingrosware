@@ -5,10 +5,8 @@ import org.lwjgl.input.Mouse;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.click.component.Component;
 import us.devs.ingrosware.gui.click.frame.impl.MainFrame;
-import us.devs.ingrosware.module.IModule;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.setting.AbstractSetting;
-import us.devs.ingrosware.setting.ISetting;
 import us.devs.ingrosware.setting.impl.BooleanSetting;
 import us.devs.ingrosware.setting.impl.NumberSetting;
 import us.devs.ingrosware.util.math.MouseUtil;
@@ -24,12 +22,12 @@ import java.util.ArrayList;
  **/
 public class ModuleComponent extends Component {
     private final MainFrame mainFrame;
-    private final IModule module;
+    private final ToggleableModule module;
     private boolean extended;
     private final ArrayList<Component> components = new ArrayList<>();
     private float scrollY;
 
-    public ModuleComponent(MainFrame mainFrame, IModule module, float posX, float posY, float offsetX, float offsetY, float width, float height) {
+    public ModuleComponent(MainFrame mainFrame, ToggleableModule module, float posX, float posY, float offsetX, float offsetY, float width, float height) {
         super(module.getLabel(), posX, posY, offsetX, offsetY, width, height);
         this.mainFrame = mainFrame;
         this.module = module;
@@ -104,8 +102,7 @@ public class ModuleComponent extends Component {
         if (hovered) {
             switch (mouseButton) {
                 case 0:
-                    if (getModule() instanceof ToggleableModule)
-                        ((ToggleableModule) getModule()).setState(!getModule().isEnabled());
+                    getModule().toggle();
                     break;
                 case 1:
                     if (!getComponents().isEmpty()) {
@@ -171,7 +168,7 @@ public class ModuleComponent extends Component {
         return mainFrame;
     }
 
-    public IModule getModule() {
+    public ToggleableModule getModule() {
         return module;
     }
 

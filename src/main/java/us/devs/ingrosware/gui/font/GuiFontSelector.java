@@ -3,10 +3,9 @@ package us.devs.ingrosware.gui.font;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiOptionButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSlot;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.font.MCFontRenderer;
 
@@ -24,6 +23,7 @@ import java.util.Map;
 public class GuiFontSelector extends GuiScreen {
     protected GuiScreen parentScreen;
     private GuiFontSelector.List list;
+    private GuiOptionButton guiOptionButton;
 
     public GuiFontSelector(GuiScreen screen) {
         this.parentScreen = screen;
@@ -31,10 +31,18 @@ public class GuiFontSelector extends GuiScreen {
 
     @Override
     public void initGui() {
+        this.guiOptionButton = addButton(new GuiOptionButton(1,
+                this.width / 2 - 155, this.height - 38,
+                "Use Custom Font?: " + IngrosWare.INSTANCE.getFontManager().isUsingCustomFont()));
         this.buttonList.add(new GuiOptionButton(5,
-                this.width / 2 - 70, this.height - 38, "Done"));
+                this.width / 2 - 155 + 160, this.height - 38, "Done"));
         this.list = new GuiFontSelector.List(this.mc);
         this.list.registerScrollButtons(7, 8);
+    }
+
+    @Override
+    public void updateScreen() {
+
     }
 
     @Override
@@ -44,12 +52,19 @@ public class GuiFontSelector extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         if (button.enabled) {
-            if (button.id == 5) {
-                this.mc.displayGuiScreen(this.parentScreen);
-            } else {
-                this.list.actionPerformed(button);
+            switch (button.id) {
+                case 5:
+                    this.mc.displayGuiScreen(this.parentScreen);
+                    break;
+                case 1:
+                    IngrosWare.INSTANCE.getFontManager().setCustomFont(!IngrosWare.INSTANCE.getFontManager().isUsingCustomFont());
+                    button.displayString = "Use Custom Font?: " + IngrosWare.INSTANCE.getFontManager().isUsingCustomFont();
+                    break;
+                default:
+                    this.list.actionPerformed(button);
+                    break;
             }
         }
     }

@@ -11,7 +11,7 @@ import us.devs.ingrosware.event.impl.network.PacketEvent;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.annotation.Toggleable;
 import us.devs.ingrosware.module.types.ToggleableModule;
-import us.devs.ingrosware.util.other.chat.ChatBuilder;
+import us.devs.ingrosware.traits.Chatable;
 import us.devs.ingrosware.util.other.chat.ChatColor;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.HashMap;
  * @since 6/16/2020
  **/
 @Toggleable(label = "TotemPopCounter", category = ModuleCategory.OTHER,color = 0xff72AE90,bind = Keyboard.KEY_NONE)
-public class TotemPopCounterModule extends ToggleableModule {
+public class TotemPopCounterModule extends ToggleableModule implements Chatable {
     public static HashMap<String, Integer> popList = new HashMap<>();
 
     @Subscribe
@@ -32,7 +32,7 @@ public class TotemPopCounterModule extends ToggleableModule {
         for(EntityPlayer player : mc.world.playerEntities) {
             if(player.getHealth() <= 0) {
                 if(popList.containsKey(player.getName())) {
-                    new ChatBuilder().appendText(player.getName(), ChatColor.DARK_AQUA).appendText(" died after popping ",ChatColor.DARK_RED).appendText(popList.get(player.getName()) + " totems!",ChatColor.GOLD).send();
+                    clientChatMsg().appendText(player.getName(), ChatColor.DARK_AQUA).appendText(" died after popping ", ChatColor.DARK_RED).appendText(popList.get(player.getDisplayNameString()) + " totems!", ChatColor.GOLD).send();
                     popList.remove(player.getName(), popList.get(player.getName()));
                 }
             }
@@ -51,12 +51,12 @@ public class TotemPopCounterModule extends ToggleableModule {
                 }
                 if(popList.get(entity.getName()) == null) {
                     popList.put(entity.getName(), 1);
-                    new ChatBuilder().appendText(entity.getName(), ChatColor.DARK_AQUA).appendText(" popped ",ChatColor.DARK_RED).appendText("1 totem!",ChatColor.GOLD).send();
+                    clientChatMsg().appendText(entity.getName(), ChatColor.DARK_AQUA).appendText(" popped ", ChatColor.DARK_RED).appendText("1 totem!", ChatColor.GOLD).send();
                 } else if(!(popList.get(entity.getName()) == null)) {
                     int popCounter = popList.get(entity.getName());
                     int newPopCounter = popCounter += 1;
                     popList.put(entity.getName(), newPopCounter);
-                    new ChatBuilder().appendText(entity.getName(), ChatColor.DARK_AQUA).appendText(" popped ",ChatColor.DARK_RED).appendText(newPopCounter + " totems!",ChatColor.GOLD).send();
+                    clientChatMsg().appendText(entity.getName(), ChatColor.DARK_AQUA).appendText(" popped ", ChatColor.DARK_RED).appendText(newPopCounter + " totems!", ChatColor.GOLD).send();
                 }
             }
         }

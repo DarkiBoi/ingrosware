@@ -47,27 +47,26 @@ public class SpeedMineModule extends ToggleableModule {
         setSuffix(mode);
         if (event.getType() == EventType.PRE) {
             mc.playerController.blockHitDelay = 0;
-            if (this.reset && mc.gameSettings.keyBindUseItem.isKeyDown()) {
+
+            if (this.reset && mc.gameSettings.keyBindUseItem.isKeyDown())
                 mc.playerController.isHittingBlock = false;
-            }
         }
     }
 
     @Subscribe
     public void resetBlockDamage(ResetBlockRemovingEvent event) {
         if (mc.world == null || mc.player == null) return;
-        if (this.reset) {
+
+        if (this.reset)
             event.setCancelled(true);
-        }
     }
 
     @Subscribe
     public void clickBlock(ClickBlockEvent event) {
         if (mc.world == null || mc.player == null) return;
         if (this.reset) {
-            if (mc.playerController.curBlockDamageMP > 0.1f) {
+            if (mc.playerController.curBlockDamageMP > 0.1f)
                 mc.playerController.isHittingBlock = true;
-            }
         }
     }
 
@@ -77,9 +76,8 @@ public class SpeedMineModule extends ToggleableModule {
         if (mc.world.getBlockState(event.getPos()).getBlock() == Blocks.PORTAL) return;
         if (canBreak(event.getPos())) {
 
-            if (this.reset) {
+            if (this.reset)
                 mc.playerController.isHittingBlock = false;
-            }
 
             switch (this.mode) {
                 case "PACKET":
