@@ -64,7 +64,7 @@ public class MacroManager extends AbstractMapManager<String, Macro> {
                 try (Reader reader = new FileReader(macroConfig.toFile())) {
                     final JsonElement element = new JsonParser().parse(reader);
                     if (element.isJsonObject())
-                        macro.load(element.getAsJsonObject());
+                        macro.fromJson(element.getAsJsonObject());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -82,8 +82,7 @@ public class MacroManager extends AbstractMapManager<String, Macro> {
 
         getValues().forEach(macro -> {
             Path macroConfig = new File(dir, macro.getLabel().toLowerCase() + ".json").toPath();
-            final JsonObject object = new JsonObject();
-            macro.save(object);
+            final JsonObject object = macro.toJson();
             if (!object.entrySet().isEmpty()) {
                 try {
                     Files.createFile(macroConfig);

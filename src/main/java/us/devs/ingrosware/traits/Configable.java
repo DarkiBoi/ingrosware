@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
  * @since 6/13/2020
  **/
 public interface Configable {
-    void save(JsonObject destination);
+    JsonObject toJson();
 
-    void load(JsonObject source);
+    void fromJson(JsonObject source);
 }

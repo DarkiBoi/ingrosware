@@ -86,27 +86,30 @@ public class Component implements Labelable, Hideable, Configable {
     }
 
     @Override
-    public void save(JsonObject directory) {
-        directory.addProperty("x", x);
-        directory.addProperty("y", y);
-        directory.addProperty("hidden", hidden);
+    public JsonObject toJson() {
+        final JsonObject object = new JsonObject();
+        object.addProperty("x", x);
+        object.addProperty("y", y);
+        object.addProperty("hidden", hidden);
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
             IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> {
                 if (property instanceof ColorSetting) {
                     final ColorSetting colorSetting = (ColorSetting) property;
-                    directory.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
+                    object.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
                 } else if (property instanceof StringSetting) {
                     final StringSetting stringSetting = (StringSetting) property;
                     final String escapedStr = StringEscapeUtils.escapeJava(stringSetting.getValue());
-                    directory.addProperty(property.getLabel(), escapedStr);
-                } else directory.addProperty(property.getLabel(), property.getValue().toString());
+                    object.addProperty(property.getLabel(), escapedStr);
+                } else object.addProperty(property.getLabel(), property.getValue().toString());
             });
         }
+
+        return object;
     }
 
     @Override
-    public void load(JsonObject directory) {
-        directory.entrySet().forEach(data -> {
+    public void fromJson(JsonObject source) {
+        source.entrySet().forEach(data -> {
             switch (data.getKey()) {
                 case "name":
                     return;
@@ -123,7 +126,7 @@ public class Component implements Labelable, Hideable, Configable {
             }
         });
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
-            directory.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> {
+            source.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> {
                 if (property instanceof ColorSetting) {
                     final ColorSetting colorSetting = (ColorSetting) property;
                     colorSetting.setValue(entry.getValue().getAsString());
@@ -134,6 +137,7 @@ public class Component implements Labelable, Hideable, Configable {
             }));
         }
     }
+
 
     public void setLabelHidden(boolean labelHidden) {
         this.labelHidden = labelHidden;

@@ -18,9 +18,5 @@ public interface IModule extends Labelable, Configable, IListener {
 
     void init();
 
-    void save(JsonObject destination);
-
-    void load(JsonObject source);
-
     boolean isEnabled();
 }

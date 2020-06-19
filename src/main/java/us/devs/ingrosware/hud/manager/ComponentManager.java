@@ -88,12 +88,12 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
 
     private void load() {
         getValues().forEach(component -> {
-            Path pluginConfiguration = new File(dir, component.getLabel().toLowerCase() + ".json").toPath();
-            if (Files.exists(pluginConfiguration)) {
-                try (Reader reader = new FileReader(pluginConfiguration.toFile())) {
+            Path componentConfig = new File(dir, component.getLabel().toLowerCase() + ".json").toPath();
+            if (Files.exists(componentConfig)) {
+                try (Reader reader = new FileReader(componentConfig.toFile())) {
                     final JsonElement element = new JsonParser().parse(reader);
                     if (element.isJsonObject())
-                        component.load(element.getAsJsonObject());
+                        component.fromJson(element.getAsJsonObject());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -110,16 +110,15 @@ public class ComponentManager extends AbstractMapManager<String, Component> {
         }
 
         getValues().forEach(component -> {
-            Path pluginConfiguration = new File(dir, component.getLabel().toLowerCase() + ".json").toPath();
-            final JsonObject object = new JsonObject();
-            component.save(object);
+            Path componentConfig = new File(dir, component.getLabel().toLowerCase() + ".json").toPath();
+            final JsonObject object = component.toJson();
             if (!object.entrySet().isEmpty()) {
                 try {
-                    Files.createFile(pluginConfiguration);
+                    Files.createFile(componentConfig);
                 } catch (IOException e) {
                     return;
                 }
-                try (Writer writer = new FileWriter(pluginConfiguration.toFile())) {
+                try (Writer writer = new FileWriter(componentConfig.toFile())) {
                     writer.write(new GsonBuilder()
                             .setPrettyPrinting()
                             .create()

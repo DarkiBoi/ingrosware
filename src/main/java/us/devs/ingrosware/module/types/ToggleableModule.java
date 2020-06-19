@@ -118,26 +118,29 @@ public class ToggleableModule implements IModule, Hideable, Stateable {
     }
 
     @Override
-    public void save(JsonObject destination) {
-        destination.addProperty("State", getState());
-        destination.addProperty("Bind", getBind());
-        destination.addProperty("Hidden", isHidden());
+    public JsonObject toJson() {
+        final JsonObject object = new JsonObject();
+        object.addProperty("State", getState());
+        object.addProperty("Bind", getBind());
+        object.addProperty("Hidden", isHidden());
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
             IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> {
                 if (property instanceof ColorSetting) {
                     final ColorSetting colorSetting = (ColorSetting) property;
-                    destination.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
+                    object.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
                 } else if (property instanceof StringSetting) {
                     final StringSetting stringSetting = (StringSetting) property;
                     final String escapedStr = StringEscapeUtils.escapeJava(stringSetting.getValue());
-                    destination.addProperty(property.getLabel(), escapedStr);
-                } else destination.addProperty(property.getLabel(), property.getValue().toString());
+                    object.addProperty(property.getLabel(), escapedStr);
+                } else object.addProperty(property.getLabel(), property.getValue().toString());
             });
         }
+
+        return object;
     }
 
     @Override
-    public void load(JsonObject source) {
+    public void fromJson(JsonObject source) {
         if (source.has("State") && source.get("State").getAsBoolean()) {
             setState(true);
         }

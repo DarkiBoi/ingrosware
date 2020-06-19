@@ -96,7 +96,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
                 try (Reader reader = new FileReader(moduleConfig.toFile())) {
                     final JsonElement element = new JsonParser().parse(reader);
                     if (element.isJsonObject())
-                        module.load(element.getAsJsonObject());
+                        module.fromJson(element.getAsJsonObject());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -114,8 +114,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
 
         getValues().forEach(module -> {
             Path moduleConfig = new File(dir, module.getLabel().toLowerCase() + ".json").toPath();
-            final JsonObject object = new JsonObject();
-            module.save(object);
+            final JsonObject object = module.toJson();
             if (!object.entrySet().isEmpty()) {
                 try {
                     Files.createFile(moduleConfig);

@@ -53,14 +53,17 @@ public class Macro implements Labelable, Configable {
     }
 
     @Override
-    public void save(JsonObject destination) {
-        destination.addProperty("Label", getLabel());
-        destination.addProperty("Bind", getKey());
-        destination.addProperty("Command", getCommand());
+    public JsonObject toJson() {
+        final JsonObject object = new JsonObject();
+        object.addProperty("Label", getLabel());
+        object.addProperty("Bind", getKey());
+        object.addProperty("Command", getCommand());
+
+        return object;
     }
 
     @Override
-    public void load(JsonObject source) {
+    public void fromJson(JsonObject source) {
         if (source.has("Label")) {
             setLabel(source.get("Label").getAsString());
         }

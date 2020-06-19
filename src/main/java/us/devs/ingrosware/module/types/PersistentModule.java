@@ -47,23 +47,26 @@ public class PersistentModule implements IModule {
     }
 
     @Override
-    public void save(JsonObject destination) {
+    public JsonObject toJson() {
+        final JsonObject object = new JsonObject();
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
             IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this).forEach(property -> {
                 if (property instanceof ColorSetting) {
                     final ColorSetting colorSetting = (ColorSetting) property;
-                    destination.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
+                    object.addProperty(property.getLabel(), colorSetting.getValue().getRGB());
                 } else if (property instanceof StringSetting) {
                     final StringSetting stringSetting = (StringSetting) property;
                     final String escapedStr = StringEscapeUtils.escapeJava(stringSetting.getValue());
-                    destination.addProperty(property.getLabel(), escapedStr);
-                } else destination.addProperty(property.getLabel(), property.getValue().toString());
+                    object.addProperty(property.getLabel(), escapedStr);
+                } else object.addProperty(property.getLabel(), property.getValue().toString());
             });
         }
+
+        return object;
     }
 
     @Override
-    public void load(JsonObject source) {
+    public void fromJson(JsonObject source) {
         if (IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(this) != null) {
             source.entrySet().forEach(entry -> IngrosWare.INSTANCE.getSettingManager().getSetting(this, entry.getKey()).ifPresent(property -> {
                 if (property instanceof ColorSetting) {
