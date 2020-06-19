@@ -1,7 +1,6 @@
 package us.devs.ingrosware;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 import tcb.bces.bus.DRCEventBus;
 import tcb.bces.bus.DRCExpander;
 import us.devs.ingrosware.command.manager.CommandManager;
@@ -10,14 +9,12 @@ import us.devs.ingrosware.font.FontManager;
 import us.devs.ingrosware.friend.FriendManager;
 import us.devs.ingrosware.hud.manager.ComponentManager;
 import us.devs.ingrosware.macro.MacroManager;
-import us.devs.ingrosware.mixin.accessors.IMinecraft;
 import us.devs.ingrosware.module.manager.ModuleManager;
 import us.devs.ingrosware.profile.ProfileManager;
 import us.devs.ingrosware.setting.SettingManager;
 import us.devs.ingrosware.traits.Closeable;
 import us.devs.ingrosware.traits.Labelable;
 import us.devs.ingrosware.traits.Startable;
-import us.devs.ingrosware.util.other.SessionUtil;
 
 import java.io.File;
 

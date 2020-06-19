@@ -76,6 +76,42 @@ public class RenderUtil {
         GL11.glPopMatrix();
     }
 
+    public static void drawCircle(float x, float y, float radius, Color color) {
+        double ps;
+        double cs;
+        double i;
+        double[] outer;
+        GlStateManager.enableAlpha();
+        GlStateManager.alphaFunc(516, 0.001f);
+        GlStateManager.enableBlend();
+        GL11.glDisable((int)3553);
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
+        GL11.glBegin((int)9);
+        for (i = 0.0; i < 36.0; i += 1.0) {
+            cs = i * 10.0 * 3.141592653589793 / 180.0;
+            ps = (i * 10.0 - 1.0) * 3.141592653589793 / 180.0;
+            outer = new double[]{Math.cos(cs) * (double)radius, (- Math.sin(cs)) * (double)radius, Math.cos(ps) * (double)radius, (- Math.sin(ps)) * (double)radius};
+            GL11.glVertex2d((double)((double)x + outer[0]), (double)((double)y + outer[1]));
+        }
+        GL11.glEnd();
+        GL11.glEnable((int)2848);
+        GL11.glBegin((int)3);
+        for (i = 0.0; i < 37.0; i += 1.0) {
+            cs = i * 10.0 * 3.141592653589793 / 180.0;
+            ps = (i * 10.0 - 1.0) * 3.141592653589793 / 180.0;
+            outer = new double[]{Math.cos(cs) * (double)radius, (- Math.sin(cs)) * (double)radius, Math.cos(ps) * (double)radius, (- Math.sin(ps)) * (double)radius};
+            GL11.glVertex2d((double)((double)x + outer[0]), (double)((double)y + outer[1]));
+        }
+        GL11.glEnd();
+        GL11.glDisable((int)2848);
+        GL11.glEnable((int)3553);
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.alphaFunc(516, 0.1f);
+    }
+
     public static void drawBox(AxisAlignedBB boundingBox) {
         if (boundingBox == null) {
             return;

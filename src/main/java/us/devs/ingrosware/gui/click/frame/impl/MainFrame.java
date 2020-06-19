@@ -9,7 +9,7 @@ import us.devs.ingrosware.gui.click.component.Component;
 import us.devs.ingrosware.gui.click.component.impl.CategoryComponent;
 import us.devs.ingrosware.gui.click.component.impl.ModuleComponent;
 import us.devs.ingrosware.gui.click.frame.Frame;
-import us.devs.ingrosware.module.IModule;
+import us.devs.ingrosware.module.Module;
 import us.devs.ingrosware.module.ModuleCategory;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.util.math.MouseUtil;
@@ -40,7 +40,7 @@ public class MainFrame extends Frame {
             getComponents().add(new CategoryComponent(this, moduleCategory, getPosX(), getPosY(), offsetX, 20.0f, shift - 2, 14));
             offsetX += shift + 0.5f;
             float offsetY = 42;
-            for (IModule module : IngrosWare.INSTANCE.getModuleManager().getValues()) {
+            for (Module module : IngrosWare.INSTANCE.getModuleManager().getValues()) {
                 if (module.getCategory() == moduleCategory) {
                     getComponents().add(new ModuleComponent(this, module, getPosX(), getPosY(), 8, offsetY, 96, 14));
                     offsetY += 16;

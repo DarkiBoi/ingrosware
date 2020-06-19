@@ -79,8 +79,8 @@ public class ProfileManager extends AbstractListManager<Profile> implements ILis
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

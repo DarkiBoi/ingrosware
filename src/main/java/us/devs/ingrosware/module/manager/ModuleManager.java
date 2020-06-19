@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.manager.impl.AbstractMapManager;
-import us.devs.ingrosware.module.IModule;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.reflect.ClassPath;
+import us.devs.ingrosware.module.Module;
 import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.util.ClassUtil;
 
@@ -24,7 +24,7 @@ import us.devs.ingrosware.util.ClassUtil;
  * @author Brennan
  * @since 6/13/2020
  **/
-public class ModuleManager extends AbstractMapManager<String, IModule> {
+public class ModuleManager extends AbstractMapManager<String, Module> {
     private final File dir;
 
     public ModuleManager(File dir) {
@@ -39,7 +39,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
         loadInternalModules();
         loadExternalModules();
 
-        getValues().forEach(IModule::init);
+        getValues().forEach(Module::init);
         load();
     }
 
@@ -48,7 +48,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
         save();
     }
 
-    private void register(IModule module) {
+    private void register(Module module) {
         put(module.getLabel(), module);
     }
 
@@ -59,8 +59,8 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
             final ClassPath classpath = ClassPath.from(loader); // scans the class path used by classloader
             for (ClassPath.ClassInfo classInfo : classpath.getTopLevelClassesRecursive(modulePackage)) {
                 final Class<?> moduleClass = classInfo.load();
-                if(IModule.class.isAssignableFrom(moduleClass)) {
-                    final IModule module = (IModule) moduleClass.newInstance();
+                if(Module.class.isAssignableFrom(moduleClass)) {
+                    final Module module = (Module) moduleClass.newInstance();
                     register(module);
                     System.out.println(String.format("[Ingros] Registered Module %s", classInfo.getSimpleName()));
                 }
@@ -139,7 +139,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
      */
     public List<ToggleableModule> getToggles() {
         final List<ToggleableModule> toggleableModules = new LinkedList<>();
-        for(IModule module : getValues()) {
+        for(Module module : getValues()) {
             if(module instanceof ToggleableModule)
                 toggleableModules.add((ToggleableModule) module);
         }
@@ -147,7 +147,7 @@ public class ModuleManager extends AbstractMapManager<String, IModule> {
         return toggleableModules;
     }
 
-    public IModule getModule(String name) {
+    public Module getModule(String name) {
         return getRegistry().get(name);
     }
 

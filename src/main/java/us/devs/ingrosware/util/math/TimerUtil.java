@@ -22,9 +22,15 @@ public class TimerUtil {
         }
         return false;
     }
+
     public short convertToMS(float perSecond) {
         return (short) (int) (1000.0F / perSecond);
     }
+
+    public long getTimePassed() {
+        return System.currentTimeMillis() - time;
+    }
+
     public long time() {
         return System.nanoTime() / 1000000L - time;
     }
