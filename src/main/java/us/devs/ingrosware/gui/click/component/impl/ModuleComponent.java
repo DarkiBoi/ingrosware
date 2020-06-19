@@ -10,6 +10,7 @@ import us.devs.ingrosware.module.types.ToggleableModule;
 import us.devs.ingrosware.setting.AbstractSetting;
 import us.devs.ingrosware.setting.ISetting;
 import us.devs.ingrosware.setting.impl.BooleanSetting;
+import us.devs.ingrosware.setting.impl.NumberSetting;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
@@ -48,6 +49,10 @@ public class ModuleComponent extends Component {
             for (AbstractSetting setting : IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(getModule())) {
                 if (setting instanceof BooleanSetting) {
                     getComponents().add(new BooleanComponent((BooleanSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
+                    offsetY += 16;
+                }
+                if (setting instanceof NumberSetting) {
+                    getComponents().add(new NumberComponent((NumberSetting) setting, getMainFrame().getPosX(), getMainFrame().getPosY(), 112, offsetY, 280, 14));
                     offsetY += 16;
                 }
             }

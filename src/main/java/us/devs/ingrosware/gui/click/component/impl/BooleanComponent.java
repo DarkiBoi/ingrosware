@@ -6,8 +6,6 @@ import us.devs.ingrosware.setting.impl.BooleanSetting;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
 
-import java.awt.*;
-
 /**
  * Made for IngrosWare-Recode
  *

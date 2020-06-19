@@ -4,6 +4,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.hud.Component;
 import us.devs.ingrosware.hud.annotation.ComponentManifest;
+import us.devs.ingrosware.setting.annotation.Clamp;
 import us.devs.ingrosware.setting.annotation.Setting;
 
 import java.awt.*;
@@ -17,8 +18,11 @@ import java.awt.*;
 @ComponentManifest(label = "Watermark", x = 2, y = 2, width = 58, height = 18)
 public class WatermarkComponent extends Component {
     @Setting("Color")
-    public Color color = new Color(255,255,255);
+    public Color color = new Color(255, 255, 255);
 
+    @Clamp(minimum = "5", maximum = "30")
+    @Setting("Test")
+    public int test = 10;
 
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
