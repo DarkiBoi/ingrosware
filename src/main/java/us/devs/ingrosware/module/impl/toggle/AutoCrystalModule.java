@@ -250,7 +250,7 @@ public class AutoCrystalModule extends ToggleableModule {
                 if (!isValidCrystal(e) || val >= minVal) continue;
                 final float targetDamage = calculateDamage(e, target);
                 final float selfDamage = calculateDamage(e, mc.player);
-                if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
+                if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && (!(targetDamage > damage && targetDamage >= target.getHealth() + target.getAbsorptionAmount()))) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
                     continue;
                 minVal = val;
                 bestEntity = e;
@@ -279,7 +279,7 @@ public class AutoCrystalModule extends ToggleableModule {
         for (final BlockPos pos : possiblePlacePositions(crystalRange, antiSurround)) {
             final float targetDamage = calculateDamage(pos, target);
             final float selfDamage = calculateDamage(pos, mc.player);
-            if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && targetDamage < target.getHealth() + target.getAbsorptionAmount()) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
+            if ((targetDamage <= (isInHole(target) ? faceDamage : damage) && (!(targetDamage > damage && targetDamage >= target.getHealth() + target.getAbsorptionAmount()))) || (antiSuicide && targetDamage <= selfDamage) || selfDamage >= mc.player.getHealth() + mc.player.getAbsorptionAmount() || (antiSuicide && selfDamage >= maxSelfDamage))
                 continue;
             placePosition = pos;
             damage = targetDamage;
