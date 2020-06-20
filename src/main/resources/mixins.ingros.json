@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "verbose": false,
   "mixins": [
+    "MixinAbstractClientPlayer",
     "MixinBlock",
     "MixinCPacketCustomPayload",
     "MixinCPacketPlayer",
@@ -14,6 +15,8 @@
     "MixinEntityPlayer",
     "MixinEntityPlayerSP",
     "MixinEntityRenderer",
+    "MixinFontRenderer",
+    "MixinGameSettings",
     "MixinGuiBossOverlay",
     "MixinGuiNewChat",
     "MixinLayerArmorBase",
@@ -27,9 +30,7 @@
     "MixinRenderManager",
     "MixinSPacketPosLook",
     "MixinTextComponentString",
-    "MixinWorldClient",
-    "MixinAbstractClientPlayer",
-    "MixinFontRenderer",
-    "MixinGameSettings"
+    "MixinWorld",
+    "MixinWorldClient"
   ]
 }
