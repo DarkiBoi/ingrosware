@@ -11,7 +11,7 @@ import us.devs.ingrosware.event.impl.render.RenderChatBackgroundEvent;
 @Mixin(GuiNewChat.class)
 public class MixinGuiNewChat {
 
-    @Redirect(method = {"drawChat"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V", ordinal = 0))
+    @Redirect(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V", ordinal = 0))
     private void overrideChatBackgroundColour(int left, int top, int right, int bottom, int color) {
         RenderChatBackgroundEvent event = new RenderChatBackgroundEvent();
         IngrosWare.INSTANCE.getBus().post(event);

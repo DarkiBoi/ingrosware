@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import us.devs.ingrosware.IngrosWare;
 import us.devs.ingrosware.gui.hud.settings.HudSettings;
 import us.devs.ingrosware.hud.Component;
+import us.devs.ingrosware.hud.type.ClickableComponent;
 import us.devs.ingrosware.hud.type.CustomComponent;
 import us.devs.ingrosware.util.math.MouseUtil;
 import us.devs.ingrosware.util.render.RenderUtil;
@@ -43,12 +44,22 @@ public class GuiHudEditor extends GuiScreen {
             if (hudComponent.getY() + hudComponent.getHeight() > scaledResolution.getScaledHeight()) {
                 hudComponent.setY(scaledResolution.getScaledHeight() - hudComponent.getHeight());
             }
-            if (!hudComponent.isHidden()) hudComponent.onDraw(scaledResolution);
 
-            RenderUtil.drawRect(hudComponent.getX(), hudComponent.getY(), hudComponent.getWidth(), hudComponent.getHeight(), hudComponent.isDragging() ? 0x95000000 : 0x80000000);
+            if(!(hudComponent instanceof ClickableComponent)) {
+                if(!hudComponent.isHidden()) {
+                    hudComponent.onDraw(scaledResolution);
 
-            if (!hudComponent.isLabelHidden())
-                fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 - (RenderUtil.getStringWidth(hudComponent.getLabel()) / 2), hudComponent.getY() + hudComponent.getHeight() / 2 - (RenderUtil.getStringHeight() / 2), new Color(255, 255, 255, 83).getRGB());
+                    RenderUtil.drawRect(hudComponent.getX(), hudComponent.getY(), hudComponent.getWidth(), hudComponent.getHeight(), hudComponent.isDragging() ? 0x95000000 : 0x80000000);
+
+                    if (!hudComponent.isLabelHidden())
+                        fontRenderer.drawStringWithShadow(hudComponent.getLabel(), hudComponent.getX() + hudComponent.getWidth() / 2 -
+                                        (RenderUtil.getStringWidth(hudComponent.getLabel()) / 2),
+                                hudComponent.getY() + hudComponent.getHeight() / 2 -
+                                        (RenderUtil.getStringHeight() / 2),hudComponent.isHidden() ? new Color(110, 110, 110, 83).getRGB() : new Color(255, 255, 255, 83).getRGB());
+                }
+            } else {
+                ((ClickableComponent) hudComponent).onDraw(mx, my, scaledResolution);
+            }
         });
     }
 
@@ -61,6 +72,9 @@ public class GuiHudEditor extends GuiScreen {
     protected void mouseClicked(int mx, int my, int p_mouseClicked_3_) throws IOException {
         super.mouseClicked(mx, my, p_mouseClicked_3_);
         IngrosWare.INSTANCE.getComponentManager().getValues().forEach(hudComponent -> {
+            if(hudComponent instanceof ClickableComponent)
+                ((ClickableComponent) hudComponent).onClick(mx, my, p_mouseClicked_3_);
+
             final boolean hovered = MouseUtil.mouseWithin(mx, my, hudComponent.getX(), hudComponent.getY(), hudComponent.getWidth(), hudComponent.getHeight());
             switch (p_mouseClicked_3_) {
                 case 0:
@@ -74,7 +88,7 @@ public class GuiHudEditor extends GuiScreen {
                     if (hovered) {
                         mc.displayGuiScreen(new HudSettings(hudComponent));
                     } else {
-                        mc.displayGuiScreen(new CustomHudComponent());
+                        //mc.displayGuiScreen(new CustomHudComponent());
                     }
                     break;
                 case 2:

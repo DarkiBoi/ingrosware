@@ -26,17 +26,17 @@ public abstract class MixinAbstractClientPlayer {
     @Shadow
     public abstract NetworkPlayerInfo getPlayerInfo();
 
-    /**
-     * Need to figure a way to do with out @Overwrite
-     * @return
-     */
-    @Overwrite
-    @Nullable
-    public ResourceLocation getLocationCape() {
-        final EventCape eventCape = new EventCape((AbstractClientPlayer) (Object) this);
+    private EventCape eventCape;
+
+    @Inject(method = "getLocationCape", at = @At("HEAD"))
+    private void onLocationCapeHead(CallbackInfoReturnable<ResourceLocation> cir) {
+        eventCape = new EventCape((AbstractClientPlayer) (Object) this);
         IngrosWare.INSTANCE.getBus().post(eventCape);
+    }
+
+    @Redirect(method = "getLocationCape", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;getLocationCape()v"))
+    public ResourceLocation getLocationCape() {
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         return networkplayerinfo == null ? null : eventCape.isCancelled() ? eventCape.getResourceLocation() : networkplayerinfo.getLocationCape();
     }
-
 }

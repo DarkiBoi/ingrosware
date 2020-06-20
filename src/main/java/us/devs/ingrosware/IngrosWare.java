@@ -36,6 +36,7 @@ public enum IngrosWare implements Startable, Closeable, Labelable {
     private FontManager fontManager;
     private FriendManager friendManager;
     private MacroManager macroManager;
+
     private final SettingManager settingManager = new SettingManager();
     private final ProfileManager profileManager = new ProfileManager();
 

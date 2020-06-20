@@ -62,34 +62,45 @@ public class ProfileManager extends AbstractListManager<Profile> implements ILis
 
     private void downloadCapes() {
         try {
-            if(Minecraft.getMinecraft().getTextureManager() != null) {
-                for(Profile profile : getList()) {
-                    final ResourceLocation cape = getResource(profile.getCapeLocation());
-
-                    if(cape == null) {
-                        final DynamicTexture texture = new DynamicTexture(ImageIO.read(new URL("http://reich.best/capes/" + profile.getCapeLocation())));
-
-                        if (texture != null) {
-                            final ResourceLocation resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(
-                                    "ingros/capes", texture);
-
-                            if (resourceLocation != null)
-                                CAPE_CACHE.put(profile.getCapeLocation(), resourceLocation);
-                        }
+            for(Profile profile : getList()) {
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    try {
+                        downloadProfileCape(profile);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
+                });
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    private void downloadProfileCape(Profile profile) throws Exception {
+        if(Minecraft.getMinecraft().getTextureManager() != null) {
+            final ResourceLocation cape = getResource(profile.getCapeLocation());
+
+            if(cape == null) {
+                final DynamicTexture texture = new DynamicTexture(ImageIO.read(new URL(String.format("http://reich.best/capes/%s", profile.getCapeLocation()))));
+
+                if (texture != null) {
+                    final ResourceLocation resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(
+                            "ingros/capes", texture);
+
+                    if (resourceLocation != null)
+                        CAPE_CACHE.put(profile.getCapeLocation(), resourceLocation);
+                }
+            }
+        }
+    }
+
     private void loadProfiles() {
         try {
-            final URL url = new URL("http://reich.best/profiles.json");
+            final URL url = new URL(String.format("%s/profiles.json", "http://reich.best/"));
             final URLConnection urlConnection = url.openConnection();
             final JsonElement jsonElement = new JsonParser().parse(new InputStreamReader((InputStream) urlConnection.getContent()));
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
+
             for(JsonElement element : jsonArray) {
                 final JsonObject object = element.getAsJsonObject();
                 add(new Profile(UUID.fromString(object.get("uuid").getAsString()), object.get("rank").getAsString(), object.get("cape_location").getAsString()));
