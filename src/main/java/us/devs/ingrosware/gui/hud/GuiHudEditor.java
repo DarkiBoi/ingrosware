@@ -85,10 +85,12 @@ public class GuiHudEditor extends GuiScreen {
                     }
                     break;
                 case 1:
-                    if (hovered) {
-                        mc.displayGuiScreen(new HudSettings(hudComponent));
-                    } else {
-                        //mc.displayGuiScreen(new CustomHudComponent());
+                    if(!(hudComponent instanceof ClickableComponent)) {
+                        if (hovered) {
+                            mc.displayGuiScreen(new HudSettings(hudComponent));
+                        } else {
+                            //mc.displayGuiScreen(new CustomHudComponent());
+                        }
                     }
                     break;
                 case 2:
