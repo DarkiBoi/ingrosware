@@ -80,7 +80,7 @@ public class ModuleManager extends AbstractMapManager<String, Module> {
                 if (clazz != null && ToggleableModule.class.isAssignableFrom(clazz)) {
                     final ToggleableModule module = (ToggleableModule) clazz.newInstance();
                     register(module);
-                    System.out.println(String.format("[Ingros] ound External Module %s", module.getLabel()));
+                    System.out.println(String.format("[Ingros] Found External Module %s", module.getLabel()));
                 }
             }
         } catch (Exception e) {

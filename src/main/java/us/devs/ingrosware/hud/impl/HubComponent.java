@@ -31,7 +31,7 @@ public class HubComponent extends ClickableComponent {
         super.onDraw(mouseX, mouseY, scaledResolution);
         RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), getHeight(), 1, new Color(0x2C2C2C).getRGB(), new Color(0x000000).getAlpha());
 
-        RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), getHeight() - 185, 0.5F, new Color(0x1E1E1E).getRGB(), new Color(0x1E1E1E).getAlpha());
+        RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), 15, 0.5F, new Color(0x1E1E1E).getRGB(), new Color(0x1E1E1E).getAlpha());
 
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Hub",
                 getX() + 5, getY() + 5, -1);
@@ -46,7 +46,7 @@ public class HubComponent extends ClickableComponent {
                     GL11.glEnable(GL11.GL_SCISSOR_TEST);
                     RenderUtil.prepareScissorBox(scaledResolution, getX(), getY() + 15, getWidth(), getHeight() - 15);
                     RenderUtil.drawBorderedRect(getX(), offsetY, getWidth(),
-                            getHeight() - 185, 0.5F, !component.isLabelHidden() ? 0xff353535 : 0xff505050, 0xff000000);
+                            15, 0.5F, !component.isHidden() ? 0xff353535 : 0xff505050, 0xff000000);
                     Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(component.getLabel(),
                             getX() + 5, offsetY + 5, -1);
                     offsetY += 16;
