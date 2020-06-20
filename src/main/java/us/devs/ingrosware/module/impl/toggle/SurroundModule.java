@@ -44,8 +44,6 @@ import java.util.List;
  **/
 @Toggleable(label = "Surround", category = ModuleCategory.COMBAT, color = 0xffAEB190, bind = Keyboard.KEY_NONE)
 public class SurroundModule extends ToggleableModule {
-    @Setting("Teleport")
-    public boolean teleport = true;
     @Setting("EndChest")
     public boolean endChest = true;
     @Clamp(maximum = "1000")
@@ -153,9 +151,6 @@ public class SurroundModule extends ToggleableModule {
                     mc.player.inventory.currentItem = slot;
                     this.lastHotbarSlot = slot;
                 }
-                if (teleport) {
-                    centerPlayer(((int)mc.player.posX) + 0.5f,mc.player.posY,((int)mc.player.posZ) + 0.5f);
-                }
                 final Block neighborPos = mc.world.getBlockState(neighbor).getBlock();
                 if (blackList.contains(neighborPos) || neighborPos == Blocks.SILVER_SHULKER_BOX || neighborPos == Blocks.BLACK_SHULKER_BOX || neighborPos == Blocks.BLUE_SHULKER_BOX || neighborPos == Blocks.BROWN_SHULKER_BOX || neighborPos == Blocks.CYAN_SHULKER_BOX || neighborPos == Blocks.GRAY_SHULKER_BOX || neighborPos == Blocks.GREEN_SHULKER_BOX || neighborPos == Blocks.LIME_SHULKER_BOX || neighborPos == Blocks.LIGHT_BLUE_SHULKER_BOX || neighborPos == Blocks.RED_SHULKER_BOX || neighborPos == Blocks.ORANGE_SHULKER_BOX || neighborPos == Blocks.WHITE_SHULKER_BOX || neighborPos == Blocks.YELLOW_SHULKER_BOX || neighborPos == Blocks.PINK_SHULKER_BOX || neighborPos == Blocks.MAGENTA_SHULKER_BOX || neighborPos == Blocks.PURPLE_SHULKER_BOX) {
                     mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
@@ -169,13 +164,7 @@ public class SurroundModule extends ToggleableModule {
         }
         return false;
     }
-    private double getDst(Vec3d vec) {
-        return mc.player.getDistance(vec.x, vec.y, vec.z);
-    }
-    private void centerPlayer(double x, double y, double z) {
-        mc.player.connection.sendPacket(new CPacketPlayer.Position(x, y, z, true));
-        mc.player.setPosition(x, y, z);
-    }
+
     private int findBlockInHotbar() {
         for (int i = 0; i < 9; ++i) {
             final ItemStack stack = mc.player.inventory.getStackInSlot(i);
