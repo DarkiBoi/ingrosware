@@ -1,6 +1,7 @@
 package us.devs.ingrosware.hud.impl;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.apache.commons.lang3.StringUtils;
 import us.devs.ingrosware.IngrosWare;
@@ -31,6 +32,7 @@ public class ArraylistComponent extends Component {
         super.onDraw(scaledResolution);
         if (mc.world == null || mc.player == null)
             return;
+        calculateSize();
         final ArrayList<ToggleableModule> sorted = new ArrayList<>(IngrosWare.INSTANCE.getModuleManager().getToggles());
         float y = getY();
         sorted.sort(Comparator.comparingDouble(m -> -RenderUtil.getStringWidth(m.getLabel() + (m.getSuffix() != null ? ChatFormatting.GRAY + " [" + StringUtils.capitalize(m.getSuffix().toLowerCase()) + "]":""))));
@@ -41,9 +43,32 @@ public class ArraylistComponent extends Component {
             }
         }
     }
-    public static int getRainbow(int speed, int offset,float s) {
+
+    private int getRainbow(int speed, int offset,float s) {
         float hue = (System.currentTimeMillis() + offset) % speed;
         hue /= speed;
         return Color.getHSBColor(hue, s, 1f).getRGB();
+    }
+
+    private void calculateSize() {
+        int width = 0, height = 0;
+
+        for(ToggleableModule toggleableModule : IngrosWare.INSTANCE.getModuleManager().getToggles()) {
+            if(toggleableModule.getState() && !toggleableModule.isHidden()) {
+                int itemWidth = mc.fontRenderer.getStringWidth(toggleableModule.getLabel()) + 7;
+                if (itemWidth > width)
+                    width = itemWidth;
+                height += 9F;
+            }
+        }
+
+        if (width == 0)
+            width = 100;
+        if (height == 0)
+            height = ((int) 9F);
+
+
+        this.setWidth(width);
+        this.setHeight(height);
     }
 }

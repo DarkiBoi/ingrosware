@@ -55,14 +55,13 @@ public class ModuleManager extends AbstractMapManager<String, Module> {
     private void loadInternalModules() {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            final String modulePackage = "us.devs.ingrosware.module.impl";
             final ClassPath classpath = ClassPath.from(loader); // scans the class path used by classloader
-            for (ClassPath.ClassInfo classInfo : classpath.getTopLevelClassesRecursive(modulePackage)) {
+            for (ClassPath.ClassInfo classInfo : classpath.getTopLevelClassesRecursive("us.devs.ingrosware.module.impl")) {
                 final Class<?> moduleClass = classInfo.load();
                 if(Module.class.isAssignableFrom(moduleClass)) {
                     final Module module = (Module) moduleClass.newInstance();
                     register(module);
-                    System.out.println(String.format("[Ingros] Registered Module %s", classInfo.getSimpleName()));
+                    System.out.println(String.format("[Ingros] Registered Module %s",classInfo.getSimpleName()));
                 }
             }
 
@@ -81,7 +80,7 @@ public class ModuleManager extends AbstractMapManager<String, Module> {
                 if (clazz != null && ToggleableModule.class.isAssignableFrom(clazz)) {
                     final ToggleableModule module = (ToggleableModule) clazz.newInstance();
                     register(module);
-                    System.out.println(String.format("[Ingros] Found External Module %s", module.getLabel()));
+                    System.out.println(String.format("[Ingros] ound External Module %s", module.getLabel()));
                 }
             }
         } catch (Exception e) {
