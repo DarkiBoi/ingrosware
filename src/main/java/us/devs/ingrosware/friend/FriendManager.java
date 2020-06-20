@@ -44,7 +44,7 @@ public class FriendManager extends AbstractListManager<Friend> implements Starta
         try {
             final PrintWriter printWriter = new PrintWriter(friendFile);
             final JsonObject jsonObject = new JsonObject();
-            this.getList().forEach(friend -> jsonObject.add(friend.getName(), new JsonPrimitive(friend.getUUID().toString())));
+            this.getList().forEach(friend -> jsonObject.addProperty(friend.getName(), friend.getUUID().toString()));
             printWriter.print(GSON.toJson(jsonObject));
             printWriter.close();
         } catch (IOException | NullPointerException ex) {

@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import tcb.bces.listener.IListener;
@@ -14,6 +16,7 @@ import us.devs.ingrosware.event.impl.other.EventCape;
 import us.devs.ingrosware.manager.impl.AbstractListManager;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -27,9 +30,7 @@ import java.util.UUID;
  *
  * @author Brennan / Seth
  * @since 6/17/2020
- *
- * I looked to seppuku for inspiration because i had no idea how i was finna do this
- **/
+ * **/
 public class ProfileManager extends AbstractListManager<Profile> implements IListener {
     private final Map<String, ResourceLocation> CAPE_CACHE = new HashMap<>();
 
@@ -49,6 +50,10 @@ public class ProfileManager extends AbstractListManager<Profile> implements ILis
         IngrosWare.INSTANCE.getBus().unregister(this);
     }
 
+    /**
+     * Copied idea from how Seppuku does it lol
+     * @param event
+     */
     @Subscribe
     public void onCape(EventCape event) {
         if(hasCape(event.getPlayer().getUniqueID())) {
@@ -64,11 +69,7 @@ public class ProfileManager extends AbstractListManager<Profile> implements ILis
         try {
             for(Profile profile : getList()) {
                 Minecraft.getMinecraft().addScheduledTask(() -> {
-                    try {
-                        downloadProfileCape(profile);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    downloadProfileCape(profile);
                 });
             }
         } catch (Exception ex) {
@@ -76,20 +77,27 @@ public class ProfileManager extends AbstractListManager<Profile> implements ILis
         }
     }
 
-    private void downloadProfileCape(Profile profile) throws Exception {
+    private void downloadProfileCape(Profile profile) {
         if(Minecraft.getMinecraft().getTextureManager() != null) {
             final ResourceLocation cape = getResource(profile.getCapeLocation());
 
             if(cape == null) {
-                final DynamicTexture texture = new DynamicTexture(ImageIO.read(new URL(String.format("http://reich.best/capes/%s", profile.getCapeLocation()))));
+                final ThreadDownloadImageData threadDownloadImageData = new ThreadDownloadImageData(null, String.format("http://reich.best/capes/%s", profile.getCapeLocation()),
+                        null, new IImageBuffer() {
 
-                if (texture != null) {
-                    final ResourceLocation resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(
-                            "ingros/capes", texture);
+                    @Override
+                    public BufferedImage parseUserSkin(BufferedImage bufferedImage) {
+                        return bufferedImage;
+                    }
 
-                    if (resourceLocation != null)
-                        CAPE_CACHE.put(profile.getCapeLocation(), resourceLocation);
-                }
+                    @Override
+                    public void skinAvailable() {}
+                });
+                final ResourceLocation resourceLocation = new ResourceLocation(String.format("ingros/capes/%s.png", profile.getUuid()));
+                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, threadDownloadImageData);
+
+                if (resourceLocation != null)
+                    CAPE_CACHE.put(profile.getCapeLocation(), resourceLocation);
             }
         }
     }

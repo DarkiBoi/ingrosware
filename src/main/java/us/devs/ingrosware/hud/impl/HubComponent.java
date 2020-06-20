@@ -1,5 +1,6 @@
 package us.devs.ingrosware.hud.impl;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
@@ -31,7 +32,7 @@ public class HubComponent extends ClickableComponent {
         super.onDraw(mouseX, mouseY, scaledResolution);
         RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), getHeight(), 1, new Color(0x2C2C2C).getRGB(), new Color(0x000000).getAlpha());
 
-        RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), 15, 0.5F, new Color(0x1E1E1E).getRGB(), new Color(0x1E1E1E).getAlpha());
+        RenderUtil.drawBorderedRect(getX(), getY(), getWidth(), getHeight() - 185, 0.5F, new Color(0x1E1E1E).getRGB(), new Color(0x1E1E1E).getAlpha());
 
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Hub",
                 getX() + 5, getY() + 5, -1);
@@ -42,13 +43,16 @@ public class HubComponent extends ClickableComponent {
         for (Component component : IngrosWare.INSTANCE.getComponentManager().getValues()) {
             if (component != null) {
                 if (!(component instanceof ClickableComponent)) {
+                    final boolean hasSettings = IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(component) != null;
+
                     GL11.glPushMatrix();
                     GL11.glEnable(GL11.GL_SCISSOR_TEST);
                     RenderUtil.prepareScissorBox(scaledResolution, getX(), getY() + 15, getWidth(), getHeight() - 15);
                     RenderUtil.drawBorderedRect(getX(), offsetY, getWidth(),
-                            15, 0.5F, !component.isHidden() ? 0xff353535 : 0xff505050, 0xff000000);
-                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(component.getLabel(),
-                            getX() + 5, offsetY + 5, -1);
+                            getHeight() - 185, 0.5F, !component.isLabelHidden() ? 0xff353535 : 0xff505050, 0xff000000);
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(component.getLabel() + (hasSettings ? ChatFormatting.WHITE + " +" : ""),
+                            getX() + 5, offsetY + 5, component.isHidden() ?
+                                    new Color(0xAE3A43).getRGB() : new Color(0x74C472).getRGB());
                     offsetY += 16;
                     GL11.glDisable(GL11.GL_SCISSOR_TEST);
                     GL11.glPopMatrix();
@@ -72,7 +76,9 @@ public class HubComponent extends ClickableComponent {
                                 component.setHidden(!component.isHidden());
                                 break;
                             case 1:
-                                mc.displayGuiScreen(new HudSettings(component));
+                                if(IngrosWare.INSTANCE.getSettingManager().getSettingsFromObject(component) != null) {
+                                    mc.displayGuiScreen(new HudSettings(component));
+                                }
                                 break;
                         }
                     }
