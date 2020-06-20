@@ -29,6 +29,7 @@
     "MixinTextComponentString",
     "MixinWorldClient",
     "MixinAbstractClientPlayer",
-    "MixinFontRenderer"
+    "MixinFontRenderer",
+    "MixinGameSettings"
   ]
 }
