@@ -30,4 +30,4 @@ gradlew setupDevWorkspace idea genIntellijRuns build
 
 # Run
 
-Add ```-Dfml.coreMods.load=us.devs.ingrosware.mixin.IngrosLoader``` to VM options.
+Add ```-Dfml.coreMods.load=best.reich.ingrosware.mixin.IngrosLoader``` to VM options.
