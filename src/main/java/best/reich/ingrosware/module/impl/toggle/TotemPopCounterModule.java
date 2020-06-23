@@ -17,10 +17,12 @@ import best.reich.ingrosware.util.other.chat.ChatColor;
 import java.util.HashMap;
 
 /**
- * Made for IngrosWare-Recode
+ * Skidded for IngrosWare-Recode
  *
- * @author oHare
- * @since 6/16/2020
+ * https://github.com/DarkiBoi/CliNet/blob/d293ebe50c5a189ccbab8b4043f6f70b936d4422/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
+ *
+ * @author Darki
+ * @since 2/22/2020
  **/
 @Toggleable(label = "TotemPopCounter", category = ModuleCategory.OTHER,color = 0xff72AE90,bind = Keyboard.KEY_NONE)
 public class TotemPopCounterModule extends ToggleableModule implements Chatable {
