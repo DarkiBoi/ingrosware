@@ -61,7 +61,7 @@ public class HudSettings extends GuiScreen {
                 if(setting instanceof StringSetting) {
                     StringSetting stringValue = (StringSetting) setting;
                     components.add(new StringButton(stringValue,width / 2 - 90,y));
-                    y += 16;
+                    y += 26;
                 }
                 if(setting instanceof ColorSetting) {
                     ColorSetting colorSetting = (ColorSetting) setting;

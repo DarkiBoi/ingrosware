@@ -21,6 +21,9 @@ public class TotemCounterComponent extends Component {
     @Setting("Color")
     public Color color = new Color(0x616161);
 
+    @Setting("Format")
+    public String format = "Totems: %s";
+
     public TotemCounterComponent() {
         setHeight(IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight());
     }
@@ -28,8 +31,8 @@ public class TotemCounterComponent extends Component {
     @Override
     public void onDraw(ScaledResolution scaledResolution) {
         super.onDraw(scaledResolution);
-        mc.fontRenderer.drawStringWithShadow("Totems: " + ChatFormatting.WHITE + totemCount(), getX(), getY(), color.getRGB());
-        setWidth(mc.fontRenderer.getStringWidth("Totems: " + ChatFormatting.WHITE + totemCount()));
+        mc.fontRenderer.drawStringWithShadow(String.format(format, "" + ChatFormatting.WHITE + totemCount()), getX(), getY(), color.getRGB());
+        setWidth(mc.fontRenderer.getStringWidth(String.format(format, "" + ChatFormatting.WHITE + totemCount())));
     }
 
     private int totemCount() {

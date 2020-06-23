@@ -22,6 +22,9 @@ public class BPSComponent extends Component {
     @Setting("Color")
     public Color color = new Color(0x616161);
 
+    @Setting("Format")
+    public String format = "BPS: %s";
+
     public BPSComponent() {
         setHeight(IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight());
     }
@@ -35,7 +38,7 @@ public class BPSComponent extends Component {
         final float tickRate = (mc.timer.tickLength / 1000.0f);
         final String bps = df.format((MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ) / tickRate));
 
-        mc.fontRenderer.drawStringWithShadow("BPS: " + ChatFormatting.WHITE + bps, getX(), getY(), color.getRGB());
-        setWidth(mc.fontRenderer.getStringWidth("BPS: " + ChatFormatting.WHITE + bps));
+        mc.fontRenderer.drawStringWithShadow(String.format(format, "" + ChatFormatting.WHITE + bps), getX(), getY(), color.getRGB());
+        setWidth(mc.fontRenderer.getStringWidth(String.format(format, "" + ChatFormatting.WHITE + bps)));
     }
 }

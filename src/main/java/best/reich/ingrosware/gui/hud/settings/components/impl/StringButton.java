@@ -29,16 +29,22 @@ public class StringButton extends HudSetting {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), RenderUtil.getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10);
-        RenderUtil.drawBorderedRect(getPosX(), getPosY(), RenderUtil.getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10, 0.5F, new Color(36, 41, 51, 255).getRGB(), isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
+        boolean isHovered = MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(),
+                Minecraft.getMinecraft().fontRenderer.getStringWidth(isEditinig() ? content : getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10);
 
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(isEditinig() ? content : getLabel() + ": " + stringSetting.getValue(), getPosX() + 2, getPosY() + getHeight() - 1 - RenderUtil.getStringHeight(), -1);
+        RenderUtil.drawBorderedRect(getPosX(), getPosY(),
+                Minecraft.getMinecraft().fontRenderer.getStringWidth(isEditinig() ? content : getLabel() + ": " +
+                        StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10, 0.5F, new Color(36, 41, 51, 255).getRGB(), isHovered ? new Color(0x505760).getRGB() : new Color(0xFF3b4149).getRGB());
+
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(isEditinig() ? content : getLabel() + ": " + stringSetting.getValue(),
+                getPosX() + 2, getPosY() + getHeight() - 1 - Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT, -1);
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if(MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), RenderUtil.getStringWidth(getLabel() + ": " + StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10)) {
+        if(MouseUtil.mouseWithin(mouseX, mouseY, getPosX(), getPosY(), Minecraft.getMinecraft().fontRenderer.getStringWidth(getLabel() + ": " +
+                StringUtils.capitalize(stringSetting.getValue().toLowerCase())) + 4, 10)) {
             if(mouseButton == 0) {
                 setEditinig(!isEditinig());
                 if (isEditinig()) {

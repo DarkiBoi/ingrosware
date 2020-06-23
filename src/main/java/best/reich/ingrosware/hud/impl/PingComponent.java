@@ -21,6 +21,9 @@ public class PingComponent extends Component {
     @Setting("Color")
     public Color color = new Color(0x616161);
 
+    @Setting("Format")
+    public String format = "Ping: %s";
+
     public PingComponent() {
         setHeight(IngrosWare.INSTANCE.getFontManager().getCurrentFont().getHeight());
     }
@@ -30,7 +33,7 @@ public class PingComponent extends Component {
         super.onDraw(scaledResolution);
         final NetworkPlayerInfo networkPlayerInfo = mc.getConnection().getPlayerInfo(mc.player.getGameProfile().getId());
         final String ping = networkPlayerInfo == null ? "0ms" : networkPlayerInfo.getResponseTime() + " ms";
-        mc.fontRenderer.drawStringWithShadow("Ping: " + ChatFormatting.WHITE + ping, getX(), getY(), color.getRGB());
-        setWidth(mc.fontRenderer.getStringWidth("Ping: " + ChatFormatting.WHITE + ping));
+        mc.fontRenderer.drawStringWithShadow(String.format(format, "" + ChatFormatting.WHITE + ping), getX(), getY(), color.getRGB());
+        setWidth(mc.fontRenderer.getStringWidth(String.format(format, "" + ChatFormatting.WHITE + ping)));
     }
 }

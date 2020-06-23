@@ -17,6 +17,9 @@ import best.reich.ingrosware.IngrosWare;
 import java.awt.*;
 import java.util.Objects;
 
+import static org.lwjgl.opengl.GL11.*;
+
+
 /**
  * made for Ingros
  *
@@ -202,7 +205,7 @@ public class RenderUtil {
     }
 
     public static void drawOutlinedBox(AxisAlignedBB bb) {
-        GL11.glBegin(GL11.GL_LINES);
+        GL11.glBegin(GL_LINES);
         {
             GL11.glVertex3d(bb.minX, bb.minY, bb.minZ);
             GL11.glVertex3d(bb.maxX, bb.minY, bb.minZ);
